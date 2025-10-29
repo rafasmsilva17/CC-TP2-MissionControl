@@ -1,9 +1,5 @@
 package core.missions;
 
-import comms.Encodable;
-import comms.Encoder;
-
-import java.nio.ByteBuffer;
 
 public class PhotoMission extends Mission{
     private int[] position;

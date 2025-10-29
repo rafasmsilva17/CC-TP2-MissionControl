@@ -2,19 +2,16 @@ package comms;
 
 import core.missions.Mission;
 import core.missions.MissionType;
-import core.missions.PhotoMission;
 
 import java.nio.ByteBuffer;
 
 public class Encoder {
-    public static int SIZEOF_INTEGER = 4;
 
     private static void addToBuffer(ByteBuffer buf ,Class dataType, Object toAdd){
         buf.put((byte)(sizeof(dataType)));
         if(dataType == int.class    || dataType == Integer.class)   buf.putInt((int)toAdd);
         if(dataType == float.class  || dataType == Float.class)     buf.putFloat((float)toAdd);
         if(dataType == char.class   || dataType == Character.class) buf.putChar((char)toAdd);
-        else return;
     }
 
     public static int sizeof(Class dataType){
