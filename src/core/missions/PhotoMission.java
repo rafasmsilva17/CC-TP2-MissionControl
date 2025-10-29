@@ -5,7 +5,7 @@ import comms.Encoder;
 
 import java.nio.ByteBuffer;
 
-public class PhotoMission extends Mission implements Encodable {
+public class PhotoMission extends Mission{
     private int[] position;
     private float direction;
     private int quantity;

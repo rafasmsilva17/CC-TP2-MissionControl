@@ -1,18 +1,18 @@
 package comms;
 
+import core.missions.Mission;
+
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-public class MotherShipServer extends Thread{
+public class MothershipServer extends Thread{
     private DatagramSocket socket;
     private boolean running;
     private byte[] buf = new byte[1024];
 
-    public MotherShipServer() throws SocketException {
+    public MothershipServer() throws SocketException {
         socket = new DatagramSocket(3000);
     }
 
@@ -57,5 +57,6 @@ public class MotherShipServer extends Thread{
         socket.close();
         System.out.println("Closing!");
     }
+
 
 }

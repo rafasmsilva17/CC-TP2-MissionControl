@@ -3,12 +3,12 @@ package comms;
 import java.io.IOException;
 import java.net.*;
 
-public class RoverClient{
+public class RoverML {
     private DatagramSocket socket;
     private InetAddress mothershipAddress;
     private byte[] buf;
 
-    public RoverClient() throws SocketException, UnknownHostException {
+    public RoverML() throws SocketException, UnknownHostException {
         socket = new DatagramSocket();
         mothershipAddress = InetAddress.getByName("localhost");
     }
@@ -28,6 +28,7 @@ public class RoverClient{
         );
         return received;
     }
+
 
     public void close(){
         socket.close();

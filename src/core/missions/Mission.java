@@ -1,7 +1,9 @@
 package core.missions;
 
 
-public abstract class Mission {
+import comms.Encodable;
+
+public abstract class Mission implements Encodable {
     public static int ID_COUNTER = 0;
 
     public MissionType type;

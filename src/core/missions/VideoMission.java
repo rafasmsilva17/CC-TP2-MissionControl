@@ -41,4 +41,9 @@ public class VideoMission extends Mission{
         return new int[]{position[0], position[1], direction, duration};
     }
 
+    // TODO fazer isto
+    @Override
+    public Object[] getEncodeData() {
+        return new Object[0];
+    }
 }

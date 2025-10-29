@@ -1,5 +1,6 @@
 package comms;
 
+import core.missions.Mission;
 import core.missions.MissionType;
 import core.missions.PhotoMission;
 
@@ -52,7 +53,7 @@ public class Encoder {
     // retorna ByteBuffer de forma:
     // numElementos | sizePos [posicao] | sizeDir [direcao] ...
     // id da missao (String) vai no fim
-    public static ByteBuffer encodeMission(PhotoMission mission){
+    public static ByteBuffer encodeMission(Mission mission){
         return encodeMission(mission.type, mission.getEncodeData(), mission.id);
     }
 }
