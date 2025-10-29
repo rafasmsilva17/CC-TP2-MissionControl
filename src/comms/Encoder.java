@@ -25,9 +25,9 @@ public class Encoder {
         int numOfBytes = 0;
         numOfBytes += missionID.length() * 2; // 2 bytes por character in java??? kys
         for(int i = 0; i < data.length; i+=2){
-            numOfBytes += sizeof((Class)data[0]);
+            numOfBytes += sizeof((Class)data[i]);
         }
-        numOfBytes += 1 + 1 + (data.length / 2) + 1; // numElementos (1 byte)+ tamanho de cada elemento + idLength(1 byte)
+        numOfBytes += 1 + 1 + (data.length / 2) + 1; // tipo + numElementos (1 byte)+ tamanho de cada elemento + idLength(1 byte)
 
         System.out.println("Buffer with " + numOfBytes);
 
