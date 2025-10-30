@@ -32,15 +32,15 @@ public class Encoder {
         System.out.println("Buffer with " + numOfBytes);
 
         ByteBuffer encoded = ByteBuffer.allocate(numOfBytes);
-        encoded.put((byte)(type.toInt()));
-        encoded.put((byte)(data.length / 2));
-        for(int i = 0; i < data.length; i+=2){
+        encoded.put((byte)(type.toInt())); // Meter tipo
+        encoded.put((byte)((data.length / 2) + 1)); // num elementos + id da missao
+        for(int i = 0; i < data.length; i+=2){ // Meter os dados da missao
             addToBuffer(encoded, (Class)data[i], data[i+1]);
             //System.out.println(encoded);
         }
 
         encoded.put((byte)missionID.length()); // tamanho da string
-        for(int i = 0; i < missionID.length(); i++){
+        for(int i = 0; i < missionID.length(); i++){ // meter id da missao
             encoded.putChar(missionID.charAt(i));
             //System.out.println(encoded + " " + missionID.charAt(i));
         }

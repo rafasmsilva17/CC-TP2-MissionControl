@@ -1,11 +1,14 @@
 package comms;
 
+import core.missions.PhotoMission;
+
 import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
 
 public class RoverServer extends Thread{
     private DatagramSocket socket;
@@ -30,9 +33,17 @@ public class RoverServer extends Thread{
                 socket.receive(packet);
                 System.out.println("Rover Received:" + packet.getData().toString().trim());
 
+                // Verificar se a missao esta correta (aqui por causa de DEBUG)
+                PhotoMission mission = new PhotoMission(ByteBuffer.wrap(packet.getData()));
+                System.out.println("Rover received mission: " + mission);
+
+
                 // Mandar confirmacao? Ou esperar por telemetria
                 int port = packet.getPort();
                 InetAddress senderAddress = packet.getAddress();
+
+                // Este return é para tirar
+                return;
 
             } catch (IOException e) {
                 System.out.println("Rover failed to receive Packet");

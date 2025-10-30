@@ -1,8 +1,10 @@
 package core.missions;
 
 
+import java.nio.ByteBuffer;
+
 public class PhotoMission extends Mission{
-    private int[] position;
+    private int[] position = new int[2];
     private float direction;
     private int quantity;
 
@@ -12,6 +14,40 @@ public class PhotoMission extends Mission{
         this.position = position.clone();
         this.direction = direction;
         this.quantity = quantity;
+    }
+
+    public PhotoMission(ByteBuffer buf){
+        super(buf);
+        int numElementos = buf.get();
+
+        try{
+            if((int)buf.get() != 4)
+                throw new IncorrectFieldSizeException("Incorrect Size for [position X]");
+            position[0] = buf.getInt();
+            if((int)buf.get() != 4)
+                throw new IncorrectFieldSizeException("Incorrect Size for [position Y]");
+            position[1] = buf.getInt();
+            if((int)buf.get() != 4)
+                throw new IncorrectFieldSizeException("Incorrect Size for [direction]");
+            direction = buf.getFloat();
+            if((int)buf.get() != 4)
+                throw new IncorrectFieldSizeException("Incorrect Size for [quantity]");
+            quantity = buf.getInt();
+
+            int idSize = (int)buf.get();
+            if (idSize < 0)
+                throw new IncorrectFieldSizeException("Invalid Size for [Mission ID]");
+
+            StringBuilder idBuild = new StringBuilder();
+            for(int i = 0; i < idSize; i++){
+                idBuild.append(buf.getChar());
+            }
+            id = idBuild.toString();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public int[] getPosition() {
@@ -49,5 +85,15 @@ public class PhotoMission extends Mission{
         data[4] = float.class; data[5] = direction;
         data[6] = int.class; data[7] = quantity;
         return data;
+    }
+
+    public String toString(){
+        StringBuilder builder = new StringBuilder();
+        builder.append("Mission ").append(id).append(" -> ");
+        builder.append("Position ( ").append(position[0]).append(" , ")
+                .append(position[1]).append(" ) | ");
+        builder.append("Direction ").append(direction).append(" | ");
+        builder.append("Quantity ").append(quantity);
+        return builder.toString();
     }
 }
