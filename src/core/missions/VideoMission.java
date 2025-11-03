@@ -5,12 +5,12 @@ public class VideoMission extends Mission{
     private int direction;
     private int duration;
 
-    public VideoMission(int[] position, int direction, int quantity){
+    public VideoMission(int[] position, int direction, int duration){
         super();
         this.type = MissionType.VIDEO;
         this.position = position.clone();
         this.direction = direction;
-        this.duration= duration;
+        this.duration = duration;
     }
 
     public int[] getPosition() {
@@ -29,21 +29,17 @@ public class VideoMission extends Mission{
         this.direction = direction;
     }
 
-    public int getQuantity() {
-        return duration;
-    }
+    public int getDuration() { return duration; }
 
-    public void setQuantity(int quantity) {
-        this.duration = quantity;
-    }
+    public void setDuration(int duration) { this.duration = duration; }
 
-    public int[] getMissionLinkData(){
-        return new int[]{position[0], position[1], direction, duration};
-    }
-
-    // TODO fazer isto
     @Override
     public Object[] getEncodeData() {
-        return new Object[0];
+        Object[] data = new Object[8];
+        data[0] = int.class;    data[1] = position[0];
+        data[2] = int.class;    data[3] = position[1];
+        data[4] = int.class;    data[5] = direction;
+        data[6] = int.class;    data[7] = duration;
+        return data;
     }
 }
