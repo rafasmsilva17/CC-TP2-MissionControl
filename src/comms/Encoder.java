@@ -6,17 +6,24 @@ import core.missions.MissionType;
 import java.nio.ByteBuffer;
 
 public class Encoder {
+    // Isto é para depois
+    public static byte INTEGER_TYPE = 0x00;
+    public static byte FLOAT_TYPE = 0x01;
+    public static byte DOUBLE_TYPE = 0x02;
+    public static byte CHAR_TYPE = 0x03;
 
     private static void addToBuffer(ByteBuffer buf ,Class dataType, Object toAdd){
         buf.put((byte)(sizeof(dataType)));
         if(dataType == int.class    || dataType == Integer.class)   buf.putInt((int)toAdd);
         if(dataType == float.class  || dataType == Float.class)     buf.putFloat((float)toAdd);
+        if(dataType == double.class || dataType == Double.class)    buf.putDouble((double)toAdd);
         if(dataType == char.class   || dataType == Character.class) buf.putChar((char)toAdd);
     }
 
     public static int sizeof(Class dataType){
         if(dataType == int.class    || dataType == Integer.class)   return 4;
         if(dataType == float.class  || dataType == Float.class)     return 4;
+        if(dataType == double.class || dataType == Double.class)    return 8;
         if(dataType == char.class   || dataType == Character.class) return 2;
         else return 4;
     }
