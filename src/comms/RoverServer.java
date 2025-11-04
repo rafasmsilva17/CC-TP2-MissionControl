@@ -42,7 +42,8 @@ public class RoverServer extends Thread{
 
                 // ID Rover | tamanhoID | ID missao recebida
                 ByteBuffer confirmation = ByteBuffer.allocate(4+ (mission.id.length() * 2));
-                confirmation.putInt(rover.getId());
+                // descomentar isto depois
+                //confirmation.putInt(rover.getId());
                 confirmation.put((byte)mission.id.length());
                 for(int i = 0; i < mission.id.length(); i++){
                     confirmation.putChar(mission.id.charAt(i));
