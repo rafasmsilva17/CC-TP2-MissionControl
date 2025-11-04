@@ -31,7 +31,7 @@ public abstract class Mission implements Encodable {
 
 
     public Mission(ByteBuffer buf){
-        type = MissionType.fromInteger((int)buf.get());
+        type = MissionType.fromInteger(buf.get());
         // Talvez um if/switch aqui para usar o construtor da missao dependendo do tipo
     }
 

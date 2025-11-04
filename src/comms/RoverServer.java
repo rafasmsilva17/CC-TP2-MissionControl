@@ -1,5 +1,6 @@
 package comms;
 
+import core.Rover;
 import core.missions.PhotoMission;
 
 import javax.xml.crypto.Data;
@@ -14,6 +15,7 @@ public class RoverServer extends Thread{
     private DatagramSocket socket;
     private boolean running;
     private byte[] buf = new byte[1024];
+    Rover rover;
 
     public RoverServer(){
         try{
@@ -38,12 +40,23 @@ public class RoverServer extends Thread{
                 System.out.println("Rover received mission: " + mission);
 
 
+                // ID Rover | tamanhoID | ID missao recebida
+                ByteBuffer confirmation = ByteBuffer.allocate(4+ (mission.id.length() * 2));
+                // descomentar isto depois
+                //confirmation.putInt(rover.getId());
+                confirmation.put((byte)mission.id.length());
+                for(int i = 0; i < mission.id.length(); i++){
+                    confirmation.putChar(mission.id.charAt(i));
+                }
+
                 // Mandar confirmacao? Ou esperar por telemetria
                 int port = packet.getPort();
                 InetAddress senderAddress = packet.getAddress();
+                DatagramPacket confirmationPacket =
+                        new DatagramPacket(confirmation.array(), confirmation.array().length,
+                                senderAddress, port);
 
-                // Este return é para tirar
-                return;
+                socket.send(confirmationPacket);
 
             } catch (IOException e) {
                 System.out.println("Rover failed to receive Packet");

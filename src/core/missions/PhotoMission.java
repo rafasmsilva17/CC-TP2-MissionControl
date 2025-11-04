@@ -20,7 +20,7 @@ public class PhotoMission extends Mission{
         super(buf);
         int numElementos = buf.get();
 
-        try{
+        try {
             if((int)buf.get() != 4)
                 throw new IncorrectFieldSizeException("Incorrect Size for [position X]");
             position[0] = buf.getInt();
@@ -80,10 +80,10 @@ public class PhotoMission extends Mission{
     @Override
     public Object[] getEncodeData() {
         Object[] data = new Object[8];
-        data[0] = int.class; data[1] = position[0];
-        data[2] = int.class; data[3] = position[1];
-        data[4] = float.class; data[5] = direction;
-        data[6] = int.class; data[7] = quantity;
+        data[0] = int.class;    data[1] = position[0];
+        data[2] = int.class;    data[3] = position[1];
+        data[4] = float.class;  data[5] = direction;
+        data[6] = int.class;    data[7] = quantity;
         return data;
     }
 
