@@ -1,11 +1,11 @@
-package core.missions
+package core.missions;
 
 public class TelemetryAnaliseSample extends MissionTelemetry{
     public Coordinate coord;
     public int quantity;
     public double radiusInM;
 
-    TelemetryGetSample(Coordinate coord, int quantity, double radiusInM){
+    TelemetryAnaliseSample(Coordinate coord, int quantity, double radiusInM){
         this.coord = coord;
         this.quantity = quantity;
         this.radiusInM = radiusInM;

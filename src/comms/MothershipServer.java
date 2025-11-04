@@ -15,10 +15,8 @@ public class MothershipServer extends Thread{
     private DatagramSocket socket;
     private boolean running;
     private byte[] buf = new byte[1024];
-
     HashMap<Integer, String> awaitingConfirmation = new HashMap<>();
     HashMap<Integer, Long> timeouts = new HashMap<>();
-
     Lock lock = new ReentrantLock();
     Condition hasConfirmsCond = lock.newCondition();
 

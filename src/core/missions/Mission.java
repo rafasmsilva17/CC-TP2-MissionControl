@@ -17,6 +17,11 @@ public abstract class Mission implements Encodable {
     public MissionTelemetry telemetry;
 
 
+    public Mission(){
+        id = "M-".concat(String.format("%03d", ID_COUNTER));
+        ID_COUNTER++;
+        this.priority = Priority.NORMAL;
+    }
 
     public Mission(MissionType type ,Priority p, MissionTelemetry telemetry) throws InvalidAttributeValueException{
        id = "M-".concat(String.format("%03d", ID_COUNTER));
@@ -39,6 +44,7 @@ public abstract class Mission implements Encodable {
         Boolean isCompatible = true;
 
         //...
+        return true;
     }
 
 
