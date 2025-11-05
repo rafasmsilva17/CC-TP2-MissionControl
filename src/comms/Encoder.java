@@ -1,63 +1,106 @@
 package comms;
 
+import core.missions.IncorrectFieldSizeException;
+import core.missions.IncorrectFieldTypeException;
 import core.missions.Mission;
-import core.missions.MissionType;
 
 import java.nio.ByteBuffer;
 
 public class Encoder {
-    // Isto é para depois
-    public static byte INTEGER_TYPE = 0x00;
-    public static byte FLOAT_TYPE = 0x01;
-    public static byte DOUBLE_TYPE = 0x02;
-    public static byte CHAR_TYPE = 0x03;
+    public static byte BYTE_TYPE = 0x00;
+    public static byte INTEGER_TYPE = 0x01;
+    public static byte FLOAT_TYPE = 0x02;
+    public static byte DOUBLE_TYPE = 0x03;
+    public static byte CHAR_TYPE = 0x04;
+    public static byte STRING_TYPE = 0x05;
+    public static byte ARRAY_TYPE = 0x10;
 
-    private static void addToBuffer(ByteBuffer buf ,Class dataType, Object toAdd){
-        buf.put((byte)(sizeof(dataType)));
-        if(dataType == int.class    || dataType == Integer.class)   buf.putInt((int)toAdd);
-        if(dataType == float.class  || dataType == Float.class)     buf.putFloat((float)toAdd);
-        if(dataType == double.class || dataType == Double.class)    buf.putDouble((double)toAdd);
-        if(dataType == char.class   || dataType == Character.class) buf.putChar((char)toAdd);
+
+    public static byte sizeof(byte type){
+        if(type == BYTE_TYPE)       return 1; // isto nao vai ser usado
+        if(type == INTEGER_TYPE)    return 4;
+        if(type == FLOAT_TYPE)      return 4;
+        if(type == DOUBLE_TYPE)     return 8;
+        if(type == CHAR_TYPE)       return 1;
+        if(type == ARRAY_TYPE)      return 1;
+        else return 0; // quem fizer sizeof de uma string que se atire de uma ponte
+    }
+    public static byte[] encode(Encodable e_obj){
+        return e_obj.getEncodeData().getBuffer();
     }
 
-    public static int sizeof(Class dataType){
-        if(dataType == int.class    || dataType == Integer.class)   return 4;
-        if(dataType == float.class  || dataType == Float.class)     return 4;
-        if(dataType == double.class || dataType == Double.class)    return 8;
-        if(dataType == char.class   || dataType == Character.class) return 2;
-        else return 4;
+    public static byte[] encodeMission(Mission mission){
+        return encode(mission);
     }
 
-    private static ByteBuffer encodeMission(MissionType type, Object[] data, String missionID){
-        int numOfBytes = 0;
-        numOfBytes += missionID.length() * 2; // 2 bytes por character in java??? kys
-        for(int i = 0; i < data.length; i+=2){
-            numOfBytes += sizeof((Class)data[i]);
+    public static byte decodeByte(ByteBuffer buffer){
+        try{
+            if(buffer.get() != BYTE_TYPE)
+                throw new IncorrectFieldTypeException("On decoding byte at " + buffer.arrayOffset());
+            return buffer.get();
+        } catch (IncorrectFieldTypeException e) {
+            throw new RuntimeException(e);
         }
-        numOfBytes += 1 + 1 + (data.length / 2) + 1; // tipo + numElementos (1 byte)+ tamanho de cada elemento + idLength(1 byte)
-
-        System.out.println("Buffer with " + numOfBytes);
-
-        ByteBuffer encoded = ByteBuffer.allocate(numOfBytes);
-        encoded.put((byte)(type.toInt())); // Meter tipo
-        encoded.put((byte)((data.length / 2) + 1)); // num elementos + id da missao
-        for(int i = 0; i < data.length; i+=2){ // Meter os dados da missao
-            addToBuffer(encoded, (Class)data[i], data[i+1]);
-            //System.out.println(encoded);
-        }
-
-        encoded.put((byte)missionID.length()); // tamanho da string
-        for(int i = 0; i < missionID.length(); i++){ // meter id da missao
-            encoded.putChar(missionID.charAt(i));
-            //System.out.println(encoded + " " + missionID.charAt(i));
-        }
-        return encoded;
     }
 
-    // retorna ByteBuffer de forma:
-    // numElementos | sizePos [posicao] | sizeDir [direcao] ...
-    // id da missao (String) vai no fim
-    public static ByteBuffer encodeMission(Mission mission){
-        return encodeMission(mission.type, mission.getEncodeData(), mission.id);
+    public static int decodeInt(ByteBuffer buffer){
+        try {
+            if(buffer.get() != INTEGER_TYPE)
+                throw new IncorrectFieldTypeException("On decoding integer at " + buffer.arrayOffset());
+            if(buffer.get() != sizeof(INTEGER_TYPE))
+                throw new IncorrectFieldSizeException("On decoding integer at " + buffer.arrayOffset());
+            return buffer.getInt();
+        } catch (IncorrectFieldTypeException | IncorrectFieldSizeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static float decodeFloat(ByteBuffer buffer){
+        try {
+            if(buffer.get() != FLOAT_TYPE)
+                throw new IncorrectFieldTypeException("On decoding float at " + buffer.arrayOffset());
+            if(buffer.get() != sizeof(FLOAT_TYPE))
+                throw new IncorrectFieldSizeException("On decoding float at " + buffer.arrayOffset());
+            return buffer.getFloat();
+        } catch (IncorrectFieldTypeException | IncorrectFieldSizeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String decodeString(ByteBuffer buffer){
+        try {
+            if(buffer.get() != STRING_TYPE)
+                throw new IncorrectFieldTypeException("On decoding string at " + buffer.arrayOffset());
+            // 2 bytes para o tamanho da string
+            int stringLen = (buffer.get() << 8 | buffer.get());
+            StringBuilder strBuild = new StringBuilder();
+            for (int i = 0; i < stringLen; i++){
+                strBuild.append((char)buffer.get());
+            }
+            return strBuild.toString();
+
+        } catch (IncorrectFieldTypeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Array decoding
+    public static int[] decodeIntArray(ByteBuffer buffer){
+        try {
+            if(buffer.get() != ARRAY_TYPE)
+                throw new IncorrectFieldTypeException("On decoding array at " + buffer.arrayOffset());
+            if(buffer.get() != INTEGER_TYPE)
+                throw new IncorrectFieldTypeException("On decoding array at " + buffer.arrayOffset());
+            int arrayLen = (buffer.get() << 8 | buffer.get());
+            int[] decoded = new int[arrayLen];
+
+            for(int i = 0; i < arrayLen; i++){
+                decoded[i] = buffer.getInt();
+            }
+
+            return decoded;
+        } catch (IncorrectFieldTypeException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -21,11 +21,11 @@ public class MothershipML {
     }
 
     public void assignMission(Mission mission){
-        ByteBuffer buf = Encoder.encodeMission(mission);
+        byte[] buf = Encoder.encodeMission(mission);
 
         try {
             DatagramPacket packet =
-                    new DatagramPacket(buf.array(), buf.array().length,
+                    new DatagramPacket(buf, buf.length,
                             InetAddress.getByName("localhost"), 3000);
 
             socket.send(packet);

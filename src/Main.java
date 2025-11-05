@@ -4,6 +4,9 @@ import comms.RoverTS;
 import comms.MothershipTS;
 import core.missions.PhotoMission;
 
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+
 
 public class Main {
 
@@ -55,5 +58,12 @@ public class Main {
 
 
         System.out.println("Main finished!");
+    }
+
+    static void mainTestes(String[] args){
+        PhotoMission miss = new PhotoMission(new int[]{0, 0}, 1, 2);
+        System.out.println(Arrays.toString(miss.getEncodeData().getBuffer()));
+        PhotoMission missDecoded = new PhotoMission(ByteBuffer.wrap(miss.getEncodeData().getBuffer()));
+        System.out.println(missDecoded);
     }
 }

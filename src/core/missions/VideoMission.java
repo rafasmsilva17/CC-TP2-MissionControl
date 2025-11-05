@@ -1,5 +1,7 @@
 package core.missions;
 
+import comms.TLVPacket;
+
 public class VideoMission extends Mission{
     private int[] position;
     private int direction;
@@ -33,13 +35,9 @@ public class VideoMission extends Mission{
 
     public void setDuration(int duration) { this.duration = duration; }
 
+
     @Override
-    public Object[] getEncodeData() {
-        Object[] data = new Object[8];
-        data[0] = int.class;    data[1] = position[0];
-        data[2] = int.class;    data[3] = position[1];
-        data[4] = int.class;    data[5] = direction;
-        data[6] = int.class;    data[7] = duration;
-        return data;
+    public TLVPacket getEncodeData() {
+        return null;
     }
 }

@@ -1,6 +1,9 @@
 package core.missions;
 
 
+import comms.Encoder;
+import comms.TLVPacket;
+
 import java.nio.ByteBuffer;
 
 public class PhotoMission extends Mission{
@@ -18,36 +21,9 @@ public class PhotoMission extends Mission{
 
     public PhotoMission(ByteBuffer buf){
         super(buf);
-        int numElementos = buf.get();
-
-        try {
-            if((int)buf.get() != 4)
-                throw new IncorrectFieldSizeException("Incorrect Size for [position X]");
-            position[0] = buf.getInt();
-            if((int)buf.get() != 4)
-                throw new IncorrectFieldSizeException("Incorrect Size for [position Y]");
-            position[1] = buf.getInt();
-            if((int)buf.get() != 4)
-                throw new IncorrectFieldSizeException("Incorrect Size for [direction]");
-            direction = buf.getFloat();
-            if((int)buf.get() != 4)
-                throw new IncorrectFieldSizeException("Incorrect Size for [quantity]");
-            quantity = buf.getInt();
-
-            int idSize = (int)buf.get();
-            if (idSize < 0)
-                throw new IncorrectFieldSizeException("Invalid Size for [Mission ID]");
-
-            StringBuilder idBuild = new StringBuilder();
-            for(int i = 0; i < idSize; i++){
-                idBuild.append(buf.getChar());
-            }
-            id = idBuild.toString();
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
+        position = Encoder.decodeIntArray(buf);
+        direction = Encoder.decodeFloat(buf);
+        quantity = Encoder.decodeInt(buf);
     }
 
     public int[] getPosition() {
@@ -74,17 +50,16 @@ public class PhotoMission extends Mission{
         this.quantity = quantity;
     }
 
-
-    // Indices pares = tipo de dados
-    // Indices impares = dados
     @Override
-    public Object[] getEncodeData() {
-        Object[] data = new Object[8];
-        data[0] = int.class;    data[1] = position[0];
-        data[2] = int.class;    data[3] = position[1];
-        data[4] = float.class;  data[5] = direction;
-        data[6] = int.class;    data[7] = quantity;
-        return data;
+    public TLVPacket getEncodeData(){
+        TLVPacket packet = new TLVPacket();
+        packet.writeByte((byte)type.toInt());
+        packet.writeString(id);
+
+        packet.writeIntArray(position);
+        packet.writeFloat(direction);
+        packet.writeInt(quantity);
+        return packet;
     }
 
     public String toString(){
