@@ -1,9 +1,8 @@
-import comms.MothershipML;
-import comms.RoverServer;
-import comms.RoverTS;
-import comms.MothershipTS;
+import comms.*;
+import core.MotherShip;
 import core.missions.PhotoMission;
 
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -17,8 +16,8 @@ public class Main {
         Thread roverServer = new Thread(new RoverServer());
         roverServer.start();
 
-        MothershipML missionAssigner = new MothershipML();
-        missionAssigner.assignMission(miss);
+        //MothershipML missionAssigner = new MothershipML();
+        //missionAssigner.assignMission(miss);
 
 
         try {
@@ -54,16 +53,20 @@ public class Main {
             System.err.println("Erro no Rover R1: " + e.getMessage());
         }
 
-
-
-
         System.out.println("Main finished!");
     }
 
-    static void mainTestes(String[] args){
+    public static void mainTestes(String[] args){
         PhotoMission miss = new PhotoMission(new int[]{0, 0}, 1, 2);
-        System.out.println(Arrays.toString(miss.getEncodeData().getBuffer()));
-        PhotoMission missDecoded = new PhotoMission(ByteBuffer.wrap(miss.getEncodeData().getBuffer()));
-        System.out.println(missDecoded);
+        //System.out.println(Arrays.toString(miss.getEncodeData().getBuffer()));
+        //PhotoMission missDecoded = new PhotoMission(ByteBuffer.wrap(miss.getEncodeData().getBuffer()));
+        //System.out.println(missDecoded);
+
+        MotherShip mothership = new MotherShip();
+        RoverServer roverS = new RoverServer();
+        roverS.start();
+
+        mothership.assignMissionTo(1, miss);
+
     }
 }

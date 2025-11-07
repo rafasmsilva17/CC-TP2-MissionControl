@@ -1,6 +1,6 @@
 package core.missions;
 
-import comms.TLVPacket;
+import comms.packets.TLVPacket;
 
 public class VideoMission extends Mission{
     private int[] position;

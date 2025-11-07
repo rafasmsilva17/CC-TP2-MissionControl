@@ -2,7 +2,7 @@ package core.missions;
 
 
 import comms.Encoder;
-import comms.TLVPacket;
+import comms.packets.TLVPacket;
 
 import java.nio.ByteBuffer;
 

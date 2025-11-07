@@ -1,5 +1,6 @@
 package comms;
 
+import comms.packets.ConfirmationPacket;
 import core.Rover;
 import core.missions.PhotoMission;
 
@@ -39,22 +40,14 @@ public class RoverServer extends Thread{
                 PhotoMission mission = new PhotoMission(ByteBuffer.wrap(packet.getData()));
                 System.out.println("Rover received mission: " + mission);
 
-
-                // ID Rover | tamanhoID | ID missao recebida
-                ByteBuffer confirmation = ByteBuffer.allocate(4+ (mission.id.length() * 2));
-                // descomentar isto depois
-                //confirmation.putInt(rover.getId());
-                confirmation.put((byte)mission.id.length());
-                for(int i = 0; i < mission.id.length(); i++){
-                    confirmation.putChar(mission.id.charAt(i));
-                }
+                ConfirmationPacket confirmation = new ConfirmationPacket(1, mission.id);
 
                 // Mandar confirmacao? Ou esperar por telemetria
                 int port = packet.getPort();
                 InetAddress senderAddress = packet.getAddress();
                 DatagramPacket confirmationPacket =
-                        new DatagramPacket(confirmation.array(), confirmation.array().length,
-                                senderAddress, port);
+                        new DatagramPacket(confirmation.getBuffer(), confirmation.getBuffer().length,
+                                senderAddress, 3001);
 
                 socket.send(confirmationPacket);
 

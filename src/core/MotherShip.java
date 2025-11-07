@@ -17,6 +17,7 @@ public class MotherShip {
     public MotherShip() {
         try {
             missionLinkServer = new MothershipServer();
+            missionLinkServer.start();
         } catch (SocketException e) {
             throw new RuntimeException(e);
         }
@@ -25,5 +26,6 @@ public class MotherShip {
     public void assignMissionTo(int roverID, Mission mission){
         missionLinker.assignMission(mission);
         missionLinkServer.addToConfirmationBuffer(roverID, mission.id);
+        System.out.println("Mission sent to rover");
     }
 }

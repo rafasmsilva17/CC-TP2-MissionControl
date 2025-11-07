@@ -1,6 +1,6 @@
 package comms;
 
-import java.nio.ByteBuffer;
+import comms.packets.TLVPacket;
 
 public interface Encodable {
 

@@ -1,8 +1,17 @@
-package comms;
+package comms.packets;
+
+import comms.Encoder;
 
 import java.nio.charset.StandardCharsets;
 
 public class TLVPacket {
+    // tamanho necessário para escrever cada tipo de dados.
+    // isto nao é necessário porque getBuffer() já retorna um buffer com o tamanho minimo
+    // mas quem quiser poupar memoria(temporária) pode usar
+    public final int SIZEFOR_INTEGER    = 6;
+    public final int SIZEFOR_FLOAT      = 6;
+    public final int SIZEFOR_BYTE       = 2;
+
     public int offset = 0;
     private byte[] buffer;
 
@@ -54,6 +63,8 @@ public class TLVPacket {
         buffer[offset++] = (byte)(toWrite.length() >>> 8);
         buffer[offset++] = (byte)(toWrite.length());
 
+        // Caracteres em Java usam 2 bytes. Mas 1 byte chega.
+        // A nao ser que algum de vos fale chines
         byte[] stringBytes = toWrite.getBytes(StandardCharsets.UTF_8);
         for (byte stringByte : stringBytes) {
             buffer[offset++] = stringByte;
