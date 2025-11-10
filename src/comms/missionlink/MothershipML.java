@@ -1,5 +1,6 @@
-package comms;
+package comms.missionlink;
 
+import comms.Encoder;
 import core.missions.Mission;
 
 import java.io.IOException;
@@ -7,7 +8,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.nio.ByteBuffer;
 
 public class MothershipML {
     private DatagramSocket socket;

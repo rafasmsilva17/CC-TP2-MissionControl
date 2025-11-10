@@ -1,10 +1,9 @@
-package comms;
+package comms.missionlink;
 
 import comms.packets.ConfirmationPacket;
 import core.Rover;
 import core.missions.PhotoMission;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

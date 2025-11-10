@@ -1,4 +1,4 @@
-package comms;
+package comms.missionlink;
 
 import java.io.*;
 import java.net.*;

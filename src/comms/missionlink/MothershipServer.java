@@ -1,6 +1,7 @@
-package comms;
+package comms.missionlink;
 
 
+import comms.Encoder;
 import comms.packets.TimeoutThread;
 import core.MotherShip;
 
@@ -88,7 +89,7 @@ public class MothershipServer extends Thread{
                 // mas eles dao todos timeout
                 System.out.println("[MOTHERSHIP SERVER] " +
                         "Socket exception! Did everything timeout?" +
-                        "You can probably ignore this");
+                        "If yes, you can probably ignore this.");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -104,7 +105,7 @@ public class MothershipServer extends Thread{
         System.out.println(awaitingConfirmation);
         if(!awaitingConfirmation.containsKey(roverID)){
             System.out.println( "[MOTHERSHIP SERVER] " +
-                    "Received confirmation for a rover it was not expecting! " +
+                    "Received confirmation for a rover I was not expecting! " +
                     "Are you sure this behaviour is intended?");
             return false;
         }

@@ -1,6 +1,8 @@
-package core.missions;
+package comms.telemetry;
 
-public class TelemetryVideo extends MissionTelemetry{
+import core.missions.Coordinate;
+
+public class TelemetryVideo extends MissionTelemetry {
     public Coordinate coord;
     public double direction;
     public int duration; //Em segundos

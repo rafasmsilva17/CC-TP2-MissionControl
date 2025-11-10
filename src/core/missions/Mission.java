@@ -3,6 +3,7 @@ package core.missions;
 
 import comms.Encodable;
 import comms.Encoder;
+import comms.telemetry.MissionTelemetry;
 
 import java.nio.ByteBuffer;
 

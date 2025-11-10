@@ -1,6 +1,8 @@
-package core.missions;
+package comms.telemetry;
 
-public class TelemetryPhoto extends MissionTelemetry{
+import core.missions.Coordinate;
+
+public class TelemetryPhoto extends MissionTelemetry {
     public Coordinate coord;
     public double direction;
     public int quantity;

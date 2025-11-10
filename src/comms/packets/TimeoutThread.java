@@ -1,6 +1,6 @@
 package comms.packets;
 
-import comms.MothershipServer;
+import comms.missionlink.MothershipServer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

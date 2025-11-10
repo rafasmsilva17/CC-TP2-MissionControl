@@ -1,4 +1,4 @@
-package core.missions;
+package comms.telemetry;
 
 public class MissionTelemetry {
 }

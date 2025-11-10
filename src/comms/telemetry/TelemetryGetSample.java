@@ -1,6 +1,8 @@
-package core.missions;
+package comms.telemetry;
 
-public class TelemetryGetSample extends MissionTelemetry{
+import core.missions.Coordinate;
+
+public class TelemetryGetSample extends MissionTelemetry {
     public Coordinate coord;
     public int quantity;
     public double radiusInM;

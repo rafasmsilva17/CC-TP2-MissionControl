@@ -1,7 +1,7 @@
 package core;
 
-import comms.MothershipML;
-import comms.MothershipServer;
+import comms.missionlink.MothershipML;
+import comms.missionlink.MothershipServer;
 import core.missions.Mission;
 
 import java.net.InetAddress;
