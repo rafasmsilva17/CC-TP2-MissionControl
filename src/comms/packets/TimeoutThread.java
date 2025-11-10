@@ -26,27 +26,10 @@ public class TimeoutThread extends Thread {
     }
 
 
-    public ArrayList<Integer> getTimedOut(){
-        timedOutLock.lock();
-        try {
-            return new ArrayList<>(timedOut);
-        } finally {
-            timedOutLock.unlock();
-        }
-    }
 
     private void notifyTimeouts(){
         msServer.receiveTimedOuts(new ArrayList<>(timedOut));
         timedOut.clear();
-    }
-
-    public boolean hasTimedOut(){
-        timedOutLock.lock();
-        try{
-            return !timedOut.isEmpty();
-        } finally {
-            timedOutLock.unlock();
-        }
     }
 
     private void addTimedOut(int id){

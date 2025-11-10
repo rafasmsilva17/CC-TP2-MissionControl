@@ -15,11 +15,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class MothershipServer extends Thread{
-    long TIMEOUT_LIMIT = 5000; // 5 Segundos
-
-    private final DatagramSocket socket;
+    private DatagramSocket socket;
     private boolean running = false;
-    private byte[] buf = new byte[1024];
+    private final byte[] buf = new byte[1024];
     HashMap<Integer, String> awaitingConfirmation = new HashMap<>();
     TimeoutThread timeoutHandler = new TimeoutThread(this);
     Lock confBufferLock = new ReentrantLock();
@@ -44,6 +42,15 @@ public class MothershipServer extends Thread{
 
     public void run() {
         while(true) {
+
+            if(socket.isClosed()) {
+                // TODO testar isto
+                try {
+                    socket.connect(InetAddress.getByName("localhost"), 3001);
+                } catch (UnknownHostException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             // Ficar parado enquanto o buffer de confirmação estiver vazio
             confBufferLock.lock();
             while(awaitingConfirmation.isEmpty()) {
@@ -122,6 +129,7 @@ public class MothershipServer extends Thread{
             awaitingConfirmation.remove(timedOutID);
             MotherShip.reassignMissionTo(timedOutID, missionID);
         }
+        // fechar socket caso não esteja à espera de nada
         if (awaitingConfirmation.isEmpty()) socket.close();
     }
 }
