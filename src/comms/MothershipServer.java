@@ -1,11 +1,13 @@
 package comms;
 
 
+import comms.packets.TimeoutThread;
 import core.MotherShip;
 
 import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.locks.Condition;
@@ -19,27 +21,31 @@ public class MothershipServer extends Thread{
     private boolean running = false;
     private byte[] buf = new byte[1024];
     HashMap<Integer, String> awaitingConfirmation = new HashMap<>();
-    HashMap<Integer, Long> timeouts = new HashMap<>();
-    Lock lock = new ReentrantLock();
-    Condition hasConfirmsCond = lock.newCondition();
+    TimeoutThread timeoutHandler = new TimeoutThread(this);
+    Lock confBufferLock = new ReentrantLock();
+    Condition hasConfirmsCond = confBufferLock.newCondition();
 
     public MothershipServer() throws SocketException {
         socket = new DatagramSocket(3001);
+        timeoutHandler.start();
     }
 
     public void addToConfirmationBuffer(int roverID, String missionID) {
-        lock.lock();
+        confBufferLock.lock();
         awaitingConfirmation.put(roverID, missionID);
-        timeouts.put(roverID, System.currentTimeMillis());
-        if(!running) hasConfirmsCond.signalAll();
+        timeoutHandler.addTimeout(roverID);
+        if(!running){
+            hasConfirmsCond.signalAll();
+
+        }
+        confBufferLock.unlock();
         System.out.println("Mission added to confirmation buffer");
-        lock.unlock();
     }
 
     public void run() {
         while(true) {
             // Ficar parado enquanto o buffer de confirmação estiver vazio
-            lock.lock();
+            confBufferLock.lock();
             while(awaitingConfirmation.isEmpty()) {
                 try {
                     running = false;
@@ -49,7 +55,7 @@ public class MothershipServer extends Thread{
                     throw new RuntimeException(e);
                 }
             }
-            lock.unlock();
+            confBufferLock.unlock();
             running = true;
 
             // Buffer de confirmaçao tem elementos -> Continuar trabalho
@@ -70,12 +76,16 @@ public class MothershipServer extends Thread{
                     System.out.println("Rover " + senderRoverID + " received mission " + missionID);
                 }
 
+            } catch (SocketException e) {
+                // So deve acontecer quando o servidor está à espera de ConfirmationPackets
+                // mas eles dao todos timeout
+                System.out.println("[MOTHERSHIP SERVER] " +
+                        "Socket exception! Did everything timeout?" +
+                        "You can probably ignore this");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
-            // Verificar se alguma missao já está em timeout
-            tickTimeouts();
             running = !awaitingConfirmation.isEmpty();
         }
     }
@@ -86,7 +96,8 @@ public class MothershipServer extends Thread{
         // E ainda nao foi enviado novamente
         System.out.println(awaitingConfirmation);
         if(!awaitingConfirmation.containsKey(roverID)){
-            System.out.println("Mothership server received confirmation for a rover it was not expecting! " +
+            System.out.println( "[MOTHERSHIP SERVER] " +
+                    "Received confirmation for a rover it was not expecting! " +
                     "Are you sure this behaviour is intended?");
             return false;
         }
@@ -94,17 +105,23 @@ public class MothershipServer extends Thread{
         boolean exists = awaitingConfirmation.get(roverID).equals(missionID);
         if (exists) {
             awaitingConfirmation.remove(roverID);
+            timeoutHandler.removeTimeout(roverID);
         }
         return exists;
     }
 
-    private void tickTimeouts(){
-        timeouts.forEach((id, arrivalTime) -> {
-            if(arrivalTime - System.currentTimeMillis() > TIMEOUT_LIMIT){
-                timeouts.remove(id);
-                awaitingConfirmation.remove(id);
-                MotherShip.reassignMissionTo(id, awaitingConfirmation.get(id));
+    public void receiveTimedOuts(ArrayList<Integer> timedOutIDs){
+        for (Integer timedOutID : timedOutIDs) {
+            String missionID = awaitingConfirmation.get(timedOutID);
+            if (missionID == null){
+                System.out.println("[MOTHERSHIP SERVER] " +
+                        "Timed out for a confirmation I wasn't waiting for!" +
+                        "You can probably ignore this.");
+                continue;
             }
-        });
+            awaitingConfirmation.remove(timedOutID);
+            MotherShip.reassignMissionTo(timedOutID, missionID);
+        }
+        if (awaitingConfirmation.isEmpty()) socket.close();
     }
 }

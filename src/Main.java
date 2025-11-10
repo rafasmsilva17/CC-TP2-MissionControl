@@ -5,7 +5,7 @@ import core.missions.PhotoMission;
 
 public class Main {
 
-    static void main(String[] args)  {
+    static void main1(String[] args)  {
         PhotoMission miss = new PhotoMission(new int[]{0, 0}, 1, 2);
         //ByteBuffer encodedMission = Encoder.encodeMission(miss);
 
@@ -52,11 +52,8 @@ public class Main {
         System.out.println("Main finished!");
     }
 
-    public static void mainTestes(String[] args){
+    public static void main(String[] args){
         PhotoMission miss = new PhotoMission(new int[]{0, 0}, 1, 2);
-        //System.out.println(Arrays.toString(miss.getEncodeData().getBuffer()));
-        //PhotoMission missDecoded = new PhotoMission(ByteBuffer.wrap(miss.getEncodeData().getBuffer()));
-        //System.out.println(missDecoded);
 
         MotherShip mothership = new MotherShip();
         RoverServer roverS = new RoverServer();
