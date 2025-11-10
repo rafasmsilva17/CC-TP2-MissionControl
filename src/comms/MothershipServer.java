@@ -1,6 +1,8 @@
 package comms;
 
 
+import core.MotherShip;
+
 import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
@@ -99,7 +101,9 @@ public class MothershipServer extends Thread{
     private void tickTimeouts(){
         timeouts.forEach((id, arrivalTime) -> {
             if(arrivalTime - System.currentTimeMillis() > TIMEOUT_LIMIT){
-                // TODO Fazer qualquer coisa com timeout
+                timeouts.remove(id);
+                awaitingConfirmation.remove(id);
+                MotherShip.reassignMissionTo(id, awaitingConfirmation.get(id));
             }
         });
     }

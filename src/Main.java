@@ -2,10 +2,6 @@ import comms.*;
 import core.MotherShip;
 import core.missions.PhotoMission;
 
-import java.net.SocketException;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-
 
 public class Main {
 
@@ -66,7 +62,7 @@ public class Main {
         RoverServer roverS = new RoverServer();
         roverS.start();
 
-        mothership.assignMissionTo(1, miss);
+        mothership.reassignMissionTo(1, miss);
 
     }
 }
