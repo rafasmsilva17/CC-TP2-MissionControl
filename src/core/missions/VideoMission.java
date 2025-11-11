@@ -4,6 +4,8 @@ import comms.Encoder;
 import java.nio.ByteBuffer;
 
 import comms.packets.TLVPacket;
+import core.missions.common.Coordinate;
+import core.missions.common.MissionType;
 
 public class VideoMission extends Mission{
     private Coordinate position;
@@ -48,9 +50,7 @@ public class VideoMission extends Mission{
 
     @Override
     public TLVPacket getEncodeData(){
-        TLVPacket packet = new TLVPacket();
-        packet.writeByte((byte)type.toInt());
-        packet.writeString(id);
+        TLVPacket packet = super.getEncodeData();
 
         packet.writeCoordinate(position);
         packet.writeFloat(direction);

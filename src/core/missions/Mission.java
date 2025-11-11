@@ -3,7 +3,10 @@ package core.missions;
 
 import comms.Encodable;
 import comms.Encoder;
+import comms.packets.TLVPacket;
 import comms.telemetry.MissionTelemetry;
+import core.missions.common.MissionType;
+import core.missions.common.Priority;
 
 import java.nio.ByteBuffer;
 
@@ -30,19 +33,28 @@ public abstract class Mission implements Encodable {
        ID_COUNTER++;
        this.priority = p;
        this.type = type;
-       if(checkTelemtryType(type, telemetry)){
+       if(checkTelemetryType(type, telemetry)){
             this.telemetry = telemetry;
        }
        else throw new InvalidAttributeValueException("The mission type and telemetry do not match!");
     }
 
-
     public Mission(ByteBuffer buf){
         type = MissionType.fromInteger(Encoder.decodeByte(buf));
         id = Encoder.decodeString(buf);
+        priority = Priority.fromInteger(Encoder.decodeByte(buf));
     }
 
-    private Boolean checkTelemtryType(MissionType type, MissionTelemetry telemetry){
+    @Override
+    public TLVPacket getEncodeData(){
+        TLVPacket packet = new TLVPacket();
+        packet.writeByte((byte)type.toInt());
+        packet.writeString(id);
+        packet.writeByte((byte)priority.toInteger());
+        return packet;
+    }
+
+    private Boolean checkTelemetryType(MissionType type, MissionTelemetry telemetry){
         Boolean isCompatible = true;
 
         //...

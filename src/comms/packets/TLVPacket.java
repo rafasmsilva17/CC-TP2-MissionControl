@@ -1,7 +1,7 @@
 package comms.packets;
 
 import comms.Encoder;
-import core.missions.Coordinate;
+import core.missions.common.Coordinate;
 
 import java.nio.charset.StandardCharsets;
 

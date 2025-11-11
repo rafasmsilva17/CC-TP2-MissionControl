@@ -1,8 +1,8 @@
 package comms;
 
-import core.missions.Coordinate;
-import core.missions.IncorrectFieldSizeException;
-import core.missions.IncorrectFieldTypeException;
+import core.missions.common.Coordinate;
+import core.missions.common.IncorrectFieldSizeException;
+import core.missions.common.IncorrectFieldTypeException;
 import core.missions.Mission;
 
 import java.nio.ByteBuffer;

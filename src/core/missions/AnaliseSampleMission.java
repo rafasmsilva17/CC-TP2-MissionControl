@@ -1,7 +1,8 @@
 package core.missions;
 
-import comms.Encoder;
 import comms.packets.TLVPacket;
+import core.missions.common.MissionType;
+
 import java.nio.ByteBuffer;
 
 
@@ -11,7 +12,7 @@ public class AnaliseSampleMission extends Mission {
 
 
     public AnaliseSampleMission(int sample_ID) {
-        this.type = MissionType.ANALYSE_SAMPLE; 
+        this.type = MissionType.ANALYSE_SAMPLE;
         this.sample_ID = sample_ID;
     }
 

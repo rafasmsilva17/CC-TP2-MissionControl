@@ -1,4 +1,4 @@
-package core.missions;
+package core.missions.common;
 
 public class Sample {
     private static int sample_Id_Counter = 1;

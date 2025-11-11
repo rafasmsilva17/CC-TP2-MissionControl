@@ -1,8 +1,7 @@
-import comms.*;
-import comms.missionlink.MothershipTS;
 import comms.missionlink.RoverServer;
 import core.MotherShip;
-import core.missions.Coordinate;
+import core.Rover;
+import core.missions.common.Coordinate;
 import core.missions.PhotoMission;
 
 
@@ -57,14 +56,16 @@ public class Main {
     */
 
     public static void main(String[] args){
-        Coordinate coord = new Coordinate(0, 0);
+        // Está a simular packet loss de 90%
+        // Para tirar ir ao ficheiro RoverServer.java e depois abre os olhos e procura
+
+        Coordinate coord = new Coordinate(88.54f, 32.64f);
         PhotoMission miss = new PhotoMission(coord, 1, 2);
 
         MotherShip mothership = new MotherShip();
-        RoverServer roverS = new RoverServer();
-        roverS.start();
+        Rover rover0 = new Rover();
 
-        mothership.reassignMissionTo(1, miss);
+        mothership.assignMissionTo(rover0.getId(), miss);
 
     }
 }

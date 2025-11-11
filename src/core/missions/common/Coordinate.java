@@ -1,4 +1,4 @@
-package core.missions;
+package core.missions.common;
 
 public class Coordinate {
     private final float latitude;

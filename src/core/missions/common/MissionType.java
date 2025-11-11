@@ -1,4 +1,4 @@
-package core.missions;
+package core.missions.common;
 
 public enum MissionType {
     PHOTO,

@@ -20,7 +20,8 @@ public class MothershipML {
         }
     }
 
-    public void assignMission(Mission mission){
+    // TODO receber endereço do rover invés do roverID
+    public void assignMission(int roverID, Mission mission){
         byte[] buf = Encoder.encodeMission(mission);
 
         try {

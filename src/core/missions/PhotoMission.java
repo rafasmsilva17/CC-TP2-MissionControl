@@ -3,6 +3,8 @@ package core.missions;
 
 import comms.Encoder;
 import comms.packets.TLVPacket;
+import core.missions.common.Coordinate;
+import core.missions.common.MissionType;
 
 import java.nio.ByteBuffer;
 
@@ -52,9 +54,7 @@ public class PhotoMission extends Mission{
 
     @Override
     public TLVPacket getEncodeData(){
-        TLVPacket packet = new TLVPacket();
-        packet.writeByte((byte)type.toInt());
-        packet.writeString(id);
+        TLVPacket packet = super.getEncodeData();
 
         packet.writeCoordinate(position);
         packet.writeFloat(direction);
@@ -63,12 +63,11 @@ public class PhotoMission extends Mission{
     }
 
     public String toString(){
-        StringBuilder builder = new StringBuilder();
-        builder.append("Mission ").append(id).append(" -> ");
-        builder.append("Position ( ").append(position.getLatitude()).append(" , ")
-                .append(position.getLongitude()).append(" ) | ");
-        builder.append("Direction ").append(direction).append(" | ");
-        builder.append("Quantity ").append(quantity);
-        return builder.toString();
+        return "Mission " + id + " -> " +
+                "Priority " + priority + " -> " +
+                "Position ( " + position.getLatitude() + " , " +
+                position.getLongitude() + " ) | " +
+                "Direction " + direction + " | " +
+                "Quantity " + quantity;
     }
 }

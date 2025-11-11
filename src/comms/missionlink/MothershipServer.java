@@ -30,41 +30,14 @@ public class MothershipServer extends Thread{
     }
 
     public void addToConfirmationBuffer(int roverID, String missionID) {
-        confBufferLock.lock();
         awaitingConfirmation.put(roverID, missionID);
         timeoutHandler.addTimeout(roverID);
-        if(!running){
-            hasConfirmsCond.signalAll();
-
-        }
-        confBufferLock.unlock();
         System.out.println("Mission added to confirmation buffer");
     }
 
     public void run() {
         while(true) {
-            if(socket.isClosed()) {
-                // TODO testar isto
-                try {
-                    socket.connect(InetAddress.getByName("localhost"), 3001);
-                } catch (UnknownHostException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            // Ficar parado enquanto o buffer de confirmação estiver vazio
-            confBufferLock.lock();
-            while(awaitingConfirmation.isEmpty()) {
-                try {
-                    running = false;
-                    System.out.println("Confirmation buffer empty. Mothership server Thread awaiting");
-                    hasConfirmsCond.await();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            confBufferLock.unlock();
             running = true;
-
             // Buffer de confirmaçao tem elementos -> Continuar trabalho
             Arrays.fill(buf, (byte)0);
             DatagramPacket packet =
@@ -129,7 +102,5 @@ public class MothershipServer extends Thread{
             awaitingConfirmation.remove(timedOutID);
             MotherShip.reassignMissionTo(timedOutID, missionID);
         }
-        // fechar socket caso não esteja à espera de nada
-        if (awaitingConfirmation.isEmpty()) socket.close();
     }
 }

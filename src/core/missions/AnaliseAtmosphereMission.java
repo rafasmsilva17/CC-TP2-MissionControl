@@ -2,6 +2,9 @@ package core.missions;
 
 import comms.Encoder;
 import comms.packets.TLVPacket;
+import core.missions.common.Coordinate;
+import core.missions.common.MissionType;
+
 import java.nio.ByteBuffer;
 
 
@@ -13,7 +16,7 @@ public class AnaliseAtmosphereMission extends Mission {
 
     public AnaliseAtmosphereMission(Coordinate var1, int var2) {
         // Você precisará adicionar ANALISE_ATMOSPHERE ao seu enum MissionType
-        this.type = MissionType.ANALYSE_ATMO; 
+        this.type = MissionType.ANALYSE_ATMO;
         this.position = var1;
         this.duration = var2;
     }

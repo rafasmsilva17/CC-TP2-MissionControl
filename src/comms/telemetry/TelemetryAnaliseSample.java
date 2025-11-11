@@ -1,6 +1,6 @@
 package comms.telemetry;
 
-import core.missions.Coordinate;
+import core.missions.common.Coordinate;
 
 public class TelemetryAnaliseSample extends MissionTelemetry {
     public Coordinate coord;
