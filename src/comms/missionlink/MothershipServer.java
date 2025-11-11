@@ -38,7 +38,7 @@ public class MothershipServer extends Thread{
     public void run() {
         while(true) {
             running = true;
-            // Buffer de confirmaçao tem elementos -> Continuar trabalho
+            // Buffer de confirmation tem elementos -> Continuar trabalho
             Arrays.fill(buf, (byte)0);
             DatagramPacket packet =
                     new DatagramPacket(buf, buf.length);
@@ -48,13 +48,20 @@ public class MothershipServer extends Thread{
                 // Recebe dados
                 ByteBuffer receivedData = ByteBuffer.wrap(packet.getData());
                 int packetType = Encoder.decodeByte(receivedData);
-                if(RoverPacketType.fromInteger(packetType) == RoverPacketType.REQUEST){
-                    // se for request de missao, mandar missao e passa para o proximo
+                RoverPacketType packetT = RoverPacketType.fromInteger(packetType);
+
+                if(packetT == RoverPacketType.REQUEST){
+                    // se for request de missão, mandar missão e passa para o proximo
                     System.out.println("[MOTHERSHIP] Received mission request from " +
                             packet.getAddress() + ":" + packet.getPort());
-
+                    continue;
+                } else if (packetT == RoverPacketType.REGISTER){
+                    // registo que o rover manda assim que é iniciado
+                    int senderRover = Encoder.decodeInt(receivedData);
+                    MotherShip.registerRover(senderRover, packet.getAddress());
                     continue;
                 }
+
                 int senderRoverID = Encoder.decodeInt(receivedData);
                 String missionID = Encoder.decodeString(receivedData);
 

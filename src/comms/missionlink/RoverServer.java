@@ -2,6 +2,7 @@ package comms.missionlink;
 
 import comms.packets.ConfirmationPacket;
 import comms.packets.MissionRequestPacket;
+import comms.packets.RegisterRoverPacket;
 import core.Rover;
 import core.missions.PhotoMission;
 
@@ -25,6 +26,19 @@ public class RoverServer extends Thread{
         }
     }
 
+    public void sendRegistration(){
+        RegisterRoverPacket registration = new RegisterRoverPacket(parentRover.getId());
+        try {
+            DatagramPacket packet = new DatagramPacket(registration.getBuffer(),
+                    registration.getBuffer().length,
+                    InetAddress.getByName("localhost"),
+                    3001);
+            socket.send(packet);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void sendMissionRequest(){
         MissionRequestPacket request = new MissionRequestPacket();
         try {
@@ -35,8 +49,6 @@ public class RoverServer extends Thread{
                     3001);
             socket.send(packet);
             System.out.println("[ROVER SERVER] Mission request sent!");
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

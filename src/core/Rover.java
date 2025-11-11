@@ -24,6 +24,7 @@ public class Rover {
         missionServer = new RoverServer(this);
         missionServer.start();
         missionHandler.start();
+        missionServer.sendRegistration();
     }
 
     public int getId(){ return id; }
@@ -32,6 +33,11 @@ public class Rover {
 
 
     public void receiveMission(Mission mission){
+        if(missionHandler.hasMission(mission)){
+            System.out.println("[ROVER " + id + "] " + " Received duplicate mission. " +
+                    "Is there packet loss?");
+            return;
+        }
         missionHandler.addMission(mission);
     }
 

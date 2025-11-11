@@ -15,7 +15,7 @@ public class MotherShip {
     // Mapa {idMissao , idRover}
     private static final HashMap<String, Integer> roverMissions = new HashMap<>();
 
-    HashMap<Integer, InetAddress> roversAddresses = new HashMap<>();
+    private static final HashMap<Integer, InetAddress> roversAddresses = new HashMap<>();
     private static final MothershipML missionLinker = new MothershipML();
     private static MothershipServer missionLinkServer;
 
@@ -29,7 +29,13 @@ public class MotherShip {
         }
     }
 
-    public void assignMissionTo(int roverID, Mission mission){
+    public static void registerRover(int roverID, InetAddress address){
+        roversAddresses.put(roverID, address);
+        System.out.println("[MOTHERSHIP] Registered rover " + roverID);
+    }
+
+
+    public void assignMissionTo(int roverID, Mission mission) {
         if (roverMissions.containsKey(mission.id)) {
             System.out.println("Attempt to assign previously assigned mission. Stopping!");
             return;

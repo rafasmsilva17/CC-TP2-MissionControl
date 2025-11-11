@@ -9,6 +9,7 @@ import core.missions.common.MissionType;
 import core.missions.common.Priority;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 
 import javax.management.InvalidAttributeValueException;
@@ -71,5 +72,15 @@ public abstract class Mission implements Encodable {
         return true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Mission mission = (Mission) o;
+        return Objects.equals(id, mission.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

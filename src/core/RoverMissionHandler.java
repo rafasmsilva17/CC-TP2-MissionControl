@@ -4,7 +4,6 @@ import comms.missionlink.RoverServer;
 import core.missions.Mission;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -19,6 +18,11 @@ public class RoverMissionHandler extends Thread{
 
     public RoverMissionHandler(Rover parent){
         parentRover = parent;
+    }
+
+    public boolean hasMission(Mission mission){
+        if (currentMission == null) return priorityQueue.contains(mission);
+        return priorityQueue.contains(mission) || currentMission.equals(mission);
     }
 
     public void addMission(Mission mission){

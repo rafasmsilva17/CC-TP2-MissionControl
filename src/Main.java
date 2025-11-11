@@ -57,16 +57,19 @@ public class Main {
     */
 
     public static void main(String[] args){
-        // Está a simular packet loss de 90%
-        // Para tirar ir ao ficheiro RoverServer.java e depois abre os olhos e procura
 
         Coordinate coord = new Coordinate(88.54f, 32.64f);
         PhotoMission miss = new PhotoMission(coord, 1, 2, 60, Priority.URGENT);
 
         MotherShip mothership = new MotherShip();
-        Rover rover0 = new Rover();
+        //Rover rover0 = new Rover();
 
-        mothership.assignMissionTo(rover0.getId(), miss);
+        try {
+            Thread.sleep(10000); // iniciar o servidor do rover durante este tempo
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        mothership.assignMissionTo(0, miss);
 
     }
 }
