@@ -39,9 +39,7 @@ public abstract class Mission implements Encodable {
 
     public Mission(ByteBuffer buf){
         type = MissionType.fromInteger(Encoder.decodeByte(buf));
-
         id = Encoder.decodeString(buf);
-        // Talvez um if/switch aqui para usar o construtor da missao dependendo do tipo
     }
 
     private Boolean checkTelemtryType(MissionType type, MissionTelemetry telemetry){

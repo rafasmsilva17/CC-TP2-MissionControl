@@ -14,7 +14,7 @@ public class TLVPacket {
     public final int SIZEFOR_BYTE       = 2;
 
     public int offset = 0;
-    private byte[] buffer;
+    private final byte[] buffer;
 
     public TLVPacket(){
         buffer = new byte[1024];
@@ -39,24 +39,43 @@ public class TLVPacket {
         buffer[offset++] = (byte)(toWrite);
     }
 
-    public void writeByte(byte toWrite){
+    @Deprecated
+    public void writeByteFull(byte toWrite){
         buffer[offset++] = Encoder.BYTE_TYPE;
         buffer[offset++] = toWrite;
     }
 
-    public void writeInt(int toWrite){
+    public void writeByte(byte toWrite){
+        buffer[offset++] = toWrite;
+    }
+
+    @Deprecated
+    public void writeIntFull(int toWrite){
         buffer[offset++] = Encoder.INTEGER_TYPE;
         writeIntBytes(toWrite);
     }
 
-    public void writeFloat(float toWrite){
+    public void writeInt(int toWrite){
+        writeIntBytes(toWrite);
+    }
+
+    @Deprecated
+    public void writeFloatFull(float toWrite){
         buffer[offset++] = Encoder.FLOAT_TYPE;
-        //write float
+        writeFloat(toWrite);
+    }
+
+    public void writeFloat(float toWrite){
         writeIntBytes(Float.floatToIntBits(toWrite));
     }
 
-    public void writeString(String toWrite){
+    @Deprecated
+    public void writeStringFull(String toWrite){
         buffer[offset++] = Encoder.STRING_TYPE;
+        writeString(toWrite);
+    }
+
+    public void writeString(String toWrite){
         // 2 bytes para numero de caracteres (32767 caracteres)
         // quem quiser escrever mais devia ter ido para Letras
         buffer[offset++] = (byte)(toWrite.length() >>> 8);
@@ -70,21 +89,34 @@ public class TLVPacket {
         }
     }
 
-    // write Arrays
-    public void writeIntArray(int[] toWrite){
-        buffer[offset++] = Encoder.ARRAY_TYPE;
-        buffer[offset++] = Encoder.INTEGER_TYPE;
+    private void writeArraySize(int size){
         // Dois bytes para tamanho do array (32767 elementos)
-        buffer[offset++] = (byte)(toWrite.length >>> 8);
-        buffer[offset++] = (byte)(toWrite.length);
+        buffer[offset++] = (byte)(size >>> 8);
+        buffer[offset++] = (byte)(size);
+    }
 
+    // write Arrays (overloaded funcs)
+    public void writeArray(int[] toWrite){
+        writeArraySize(toWrite.length);
         for (int i : toWrite) {
             writeIntBytes(i);
         }
     }
 
-    public void writeCoordinate(Coordinate coord){
+    public void writeArray(String[] toWrite){
+        writeArraySize(toWrite.length);
+        for (String s : toWrite) {
+            writeString(s);
+        }
+    }
+    // ///////
+
+    public void writeCoordinateFull(Coordinate coord){
         buffer[offset++] = Encoder.COORDINATE_TYPE;
+        writeCoordinate(coord);
+    }
+
+    public void writeCoordinate(Coordinate coord){
         this.writeIntBytes(Float.floatToIntBits(coord.getLatitude()));
         this.writeIntBytes(Float.floatToIntBits(coord.getLongitude()));
     }
