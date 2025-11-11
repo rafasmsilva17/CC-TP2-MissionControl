@@ -1,0 +1,64 @@
+package core;
+
+import comms.missionlink.RoverServer;
+import core.missions.Mission;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class RoverMissionHandler extends Thread{
+    Rover parentRover;
+    private final PriorityQueue<Mission> priorityQueue =
+            new PriorityQueue<>(Comparator.comparingInt((Mission m) -> m.priority.toInteger()).reversed());
+    private Mission currentMission = null;
+    private final Lock missionQueueLock = new ReentrantLock();
+
+
+    public RoverMissionHandler(Rover parent){
+        parentRover = parent;
+    }
+
+    public void addMission(Mission mission){
+        missionQueueLock.lock();
+        priorityQueue.add(mission);
+        missionQueueLock.unlock();
+    }
+
+
+    private void requestMission(){
+        RoverServer server = parentRover.getServer();
+        server.sendMissionRequest();
+    }
+
+    private void doMission(){
+        if (priorityQueue.isEmpty()) return;
+        if (currentMission == null) currentMission = priorityQueue.poll();
+        // Fazer missão de alguma forma
+    }
+
+    public void run(){
+        while(true){
+            // Ficar a pedir missão enquanto não tem missão.
+            while(true){
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                missionQueueLock.lock();
+                boolean isEmpty = (priorityQueue.isEmpty() && currentMission == null);
+                missionQueueLock.unlock();
+
+                if(!isEmpty) break;
+                requestMission();
+            }
+
+            doMission();
+            // Acabou missao
+        }
+    }
+
+}

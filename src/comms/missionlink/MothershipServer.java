@@ -2,7 +2,7 @@ package comms.missionlink;
 
 
 import comms.Encoder;
-import comms.packets.TimeoutThread;
+import comms.packets.RoverPacketType;
 import core.MotherShip;
 
 import java.io.IOException;
@@ -47,6 +47,14 @@ public class MothershipServer extends Thread{
 
                 // Recebe dados
                 ByteBuffer receivedData = ByteBuffer.wrap(packet.getData());
+                int packetType = Encoder.decodeByte(receivedData);
+                if(RoverPacketType.fromInteger(packetType) == RoverPacketType.REQUEST){
+                    // se for request de missao, mandar missao e passa para o proximo
+                    System.out.println("[MOTHERSHIP] Received mission request from " +
+                            packet.getAddress() + ":" + packet.getPort());
+
+                    continue;
+                }
                 int senderRoverID = Encoder.decodeInt(receivedData);
                 String missionID = Encoder.decodeString(receivedData);
 

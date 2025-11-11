@@ -3,6 +3,7 @@ import core.MotherShip;
 import core.Rover;
 import core.missions.common.Coordinate;
 import core.missions.PhotoMission;
+import core.missions.common.Priority;
 
 
 public class Main {
@@ -60,7 +61,7 @@ public class Main {
         // Para tirar ir ao ficheiro RoverServer.java e depois abre os olhos e procura
 
         Coordinate coord = new Coordinate(88.54f, 32.64f);
-        PhotoMission miss = new PhotoMission(coord, 1, 2);
+        PhotoMission miss = new PhotoMission(coord, 1, 2, 60, Priority.URGENT);
 
         MotherShip mothership = new MotherShip();
         Rover rover0 = new Rover();

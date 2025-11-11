@@ -15,6 +15,7 @@ import javax.management.InvalidAttributeValueException;
 
 public abstract class Mission implements Encodable {
     public static int ID_COUNTER = 0;
+    public int tempoMaximo = 10; // 10 segundos ou minutos
 
     public MissionType type;
     public String id;
@@ -26,6 +27,13 @@ public abstract class Mission implements Encodable {
         id = "M-".concat(String.format("%03d", ID_COUNTER));
         ID_COUNTER++;
         this.priority = Priority.NORMAL;
+    }
+
+    public Mission(Priority p, int duracaoMaxima){
+        id = "M-".concat(String.format("%03d", ID_COUNTER));
+        ID_COUNTER++;
+        this.priority = p;
+        this.tempoMaximo = duracaoMaxima;
     }
 
     public Mission(MissionType type ,Priority p, MissionTelemetry telemetry) throws InvalidAttributeValueException{
@@ -43,6 +51,7 @@ public abstract class Mission implements Encodable {
         type = MissionType.fromInteger(Encoder.decodeByte(buf));
         id = Encoder.decodeString(buf);
         priority = Priority.fromInteger(Encoder.decodeByte(buf));
+        tempoMaximo = Encoder.decodeInt(buf);
     }
 
     @Override
@@ -51,6 +60,7 @@ public abstract class Mission implements Encodable {
         packet.writeByte((byte)type.toInt());
         packet.writeString(id);
         packet.writeByte((byte)priority.toInteger());
+        packet.writeInt(tempoMaximo);
         return packet;
     }
 

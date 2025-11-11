@@ -5,6 +5,7 @@ import comms.Encoder;
 import comms.packets.TLVPacket;
 import core.missions.common.Coordinate;
 import core.missions.common.MissionType;
+import core.missions.common.Priority;
 
 import java.nio.ByteBuffer;
 
@@ -15,6 +16,18 @@ public class PhotoMission extends Mission{
 
     public PhotoMission(Coordinate position, int direction, int quantity) {
         super();
+        this.type = MissionType.PHOTO;
+        this.position = position;
+        this.direction = direction;
+        this.quantity = quantity;
+    }
+
+    public PhotoMission(Coordinate position,
+                        int direction,
+                        int quantity,
+                        int duracaoMaxima,
+                        Priority p) {
+        super(p, duracaoMaxima);
         this.type = MissionType.PHOTO;
         this.position = position;
         this.direction = direction;
@@ -65,6 +78,7 @@ public class PhotoMission extends Mission{
     public String toString(){
         return "Mission " + id + " -> " +
                 "Priority " + priority + " -> " +
+                "Duraçao Maxima: " + tempoMaximo + " minutos | " +
                 "Position ( " + position.getLatitude() + " , " +
                 position.getLongitude() + " ) | " +
                 "Direction " + direction + " | " +
