@@ -1,6 +1,7 @@
 package comms.packets;
 
 import comms.Encoder;
+import core.missions.Coordinate;
 
 import java.nio.charset.StandardCharsets;
 
@@ -82,5 +83,13 @@ public class TLVPacket {
         for (int i : toWrite) {
             writeIntBytes(i);
         }
+    }
+
+    public void writeCoordinate(Coordinate coord){
+        buffer[offset++] = Encoder.COORDINATE_TYPE;
+        buffer[offset++] = Encoder.DOUBLE_TYPE;
+
+        this.writeFloat(coord.getLatitude());
+        this.writeFloat(coord.getLongitude());
     }
 }

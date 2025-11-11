@@ -1,10 +1,10 @@
 package core.missions;
 
 public class Coordinate {
-    private final double latitude;
-    private final double longitude;
+    private final float latitude;
+    private final float longitude;
 
-    public Coordinate(double lat, double lon) {
+    public Coordinate(float lat, float lon) {
         if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
             throw new IllegalArgumentException("Invalid latitude or longitude value.");
         }
@@ -12,30 +12,30 @@ public class Coordinate {
         this.longitude = lon;
     }
 
-    public double getLatitude() {
+    public float getLatitude() {
         return latitude;
     }
 
-    public double getLongitude() {
+    public float getLongitude() {
         return longitude;
     }
 
-    public double distanceTo(Coordinate other, double planetRadiusKM) {
+    public float distanceTo(Coordinate other, float planetRadiusKM) {
 
-        double latDistance = Math.toRadians(other.latitude - this.latitude);
-        double lonDistance = Math.toRadians(other.longitude - this.longitude);
+        double latDistance = Math.toRadians((double)(other.latitude - this.latitude));
+        double lonDistance = Math.toRadians((double)(other.longitude - this.longitude));
 
-        double lat1 = Math.toRadians(this.latitude);
-        double lat2 = Math.toRadians(other.latitude);
+        double lat1 = Math.toRadians((double)this.latitude);
+        double lat2 = Math.toRadians((double)other.latitude);
 
         // Apply the Haversine formula
         // Haversine formula: a = sin²(Δlat/2) + cos(lat1) * cos(lat2) * sin²(Δlon/2)
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+        float a = (float)(Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
                  + Math.cos(lat1) * Math.cos(lat2)
-                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2));
 
         // c = 2 * atan2(√a, √(1−a))
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        float c =(float)( 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
 
         return planetRadiusKM * c;
     }

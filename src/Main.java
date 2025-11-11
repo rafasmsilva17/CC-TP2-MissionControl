@@ -2,11 +2,12 @@ import comms.*;
 import comms.missionlink.MothershipTS;
 import comms.missionlink.RoverServer;
 import core.MotherShip;
+import core.missions.Coordinate;
 import core.missions.PhotoMission;
 
 
 public class Main {
-
+    /*
     static void main1(String[] args)  {
         PhotoMission miss = new PhotoMission(new int[]{0, 0}, 1, 2);
         //ByteBuffer encodedMission = Encoder.encodeMission(miss);
@@ -53,9 +54,11 @@ public class Main {
 
         System.out.println("Main finished!");
     }
+    */
 
     public static void main(String[] args){
-        PhotoMission miss = new PhotoMission(new int[]{0, 0}, 1, 2);
+        Coordinate coord = new Coordinate(0, 0);
+        PhotoMission miss = new PhotoMission(coord, 1, 2);
 
         MotherShip mothership = new MotherShip();
         RoverServer roverS = new RoverServer();

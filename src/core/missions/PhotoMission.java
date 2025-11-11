@@ -7,31 +7,31 @@ import comms.packets.TLVPacket;
 import java.nio.ByteBuffer;
 
 public class PhotoMission extends Mission{
-    private int[] position = new int[2];
+    private Coordinate position;
     private float direction;
     private int quantity;
 
-    public PhotoMission(int[] position, int direction, int quantity) {
+    public PhotoMission(Coordinate position, int direction, int quantity) {
         super();
         this.type = MissionType.PHOTO;
-        this.position = position.clone();
+        this.position = position;
         this.direction = direction;
         this.quantity = quantity;
     }
 
     public PhotoMission(ByteBuffer buf){
         super(buf);
-        position = Encoder.decodeIntArray(buf);
+        position = Encoder.decodeCoordinate(buf);
         direction = Encoder.decodeFloat(buf);
         quantity = Encoder.decodeInt(buf);
     }
 
-    public int[] getPosition() {
+    public Coordinate getPosition() {
         return position;
     }
 
-    public void setPosition(int[] position) {
-        this.position = position.clone();
+    public void setPosition(Coordinate position) {
+        this.position = position;
     }
 
     public float getDirection() {
@@ -56,7 +56,7 @@ public class PhotoMission extends Mission{
         packet.writeByte((byte)type.toInt());
         packet.writeString(id);
 
-        packet.writeIntArray(position);
+        packet.writeCoordinate(position);
         packet.writeFloat(direction);
         packet.writeInt(quantity);
         return packet;
@@ -65,8 +65,8 @@ public class PhotoMission extends Mission{
     public String toString(){
         StringBuilder builder = new StringBuilder();
         builder.append("Mission ").append(id).append(" -> ");
-        builder.append("Position ( ").append(position[0]).append(" , ")
-                .append(position[1]).append(" ) | ");
+        builder.append("Position ( ").append(position.getLatitude()).append(" , ")
+                .append(position.getLongitude()).append(" ) | ");
         builder.append("Direction ").append(direction).append(" | ");
         builder.append("Quantity ").append(quantity);
         return builder.toString();

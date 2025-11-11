@@ -1,26 +1,36 @@
 package core.missions;
 
+import comms.Encoder;
+import java.nio.ByteBuffer;
+
 import comms.packets.TLVPacket;
 
 public class VideoMission extends Mission{
-    private int[] position;
-    private int direction;
+    private Coordinate position;
+    private int direction; // em graus (N,S,E,O)
     private int duration;
 
-    public VideoMission(int[] position, int direction, int duration){
+    public VideoMission(Coordinate position, int direction, int duration){
         super();
         this.type = MissionType.VIDEO;
-        this.position = position.clone();
+        this.position = position;
         this.direction = direction;
         this.duration = duration;
     }
 
-    public int[] getPosition() {
+    public VideoMission(ByteBuffer buf){
+        super(buf);
+        this.position = Encoder.decodeCoordinate(buf);
+        this.direction = Encoder.decodeInt(buf);
+        this.duration = Encoder.decodeInt(buf);
+    }
+
+    public Coordinate getPosition() {
         return position;
     }
 
-    public void setPosition(int[] position) {
-        this.position = position.clone();
+    public void setPosition(Coordinate position) {
+        this.position = position;
     }
 
     public int getDirection() {
@@ -37,7 +47,14 @@ public class VideoMission extends Mission{
 
 
     @Override
-    public TLVPacket getEncodeData() {
-        return null;
+    public TLVPacket getEncodeData(){
+        TLVPacket packet = new TLVPacket();
+        packet.writeByte((byte)type.toInt());
+        packet.writeString(id);
+
+        packet.writeCoordinate(position);
+        packet.writeFloat(direction);
+        packet.writeInt(duration);
+        return packet;
     }
 }

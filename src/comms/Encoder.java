@@ -1,5 +1,6 @@
 package comms;
 
+import core.missions.Coordinate;
 import core.missions.IncorrectFieldSizeException;
 import core.missions.IncorrectFieldTypeException;
 import core.missions.Mission;
@@ -13,6 +14,7 @@ public class Encoder {
     public static byte DOUBLE_TYPE = 0x03;
     public static byte CHAR_TYPE = 0x04;
     public static byte STRING_TYPE = 0x05;
+    public static byte COORDINATE_TYPE = 0x06;
     public static byte ARRAY_TYPE = 0x10;
 
 
@@ -103,4 +105,23 @@ public class Encoder {
             throw new RuntimeException(e);
         }
     }
+
+    public static Coordinate decodeCoordinate(ByteBuffer buffer){
+        try{
+            if(buffer.get() != COORDINATE_TYPE)
+                throw new IncorrectFieldTypeException("On decoding array at " + buffer.arrayOffset());
+            if(buffer.get() != FLOAT_TYPE)
+                throw new IncorrectFieldTypeException("On decoding array at " + buffer.arrayOffset());
+            
+            float latitude = buffer.getFloat();
+            float longitude = buffer.getFloat();
+
+            return new Coordinate(latitude, longitude);
+        
+        }catch (IncorrectFieldTypeException e){
+            throw new RuntimeException(e);
+
+        }
+    }
+
 }
