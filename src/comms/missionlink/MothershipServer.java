@@ -16,13 +16,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class MothershipServer extends Thread{
-    private DatagramSocket socket;
+    private final DatagramSocket socket;
     private boolean running = false;
     private final byte[] buf = new byte[1024];
-    HashMap<Integer, String> awaitingConfirmation = new HashMap<>();
-    TimeoutThread timeoutHandler = new TimeoutThread(this);
-    Lock confBufferLock = new ReentrantLock();
-    Condition hasConfirmsCond = confBufferLock.newCondition();
+    private final HashMap<Integer, String> awaitingConfirmation = new HashMap<>();
+    private final TimeoutThread timeoutHandler = new TimeoutThread(this);
+    private final Lock confBufferLock = new ReentrantLock();
+    private final Condition hasConfirmsCond = confBufferLock.newCondition();
 
     public MothershipServer() throws SocketException {
         socket = new DatagramSocket(3001);
@@ -43,7 +43,6 @@ public class MothershipServer extends Thread{
 
     public void run() {
         while(true) {
-
             if(socket.isClosed()) {
                 // TODO testar isto
                 try {

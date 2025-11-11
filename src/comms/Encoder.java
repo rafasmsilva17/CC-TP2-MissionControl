@@ -49,8 +49,6 @@ public class Encoder {
         try {
             if(buffer.get() != INTEGER_TYPE)
                 throw new IncorrectFieldTypeException("On decoding integer at " + buffer.arrayOffset());
-            if(buffer.get() != sizeof(INTEGER_TYPE))
-                throw new IncorrectFieldSizeException("On decoding integer at " + buffer.arrayOffset());
             return buffer.getInt();
         } catch (IncorrectFieldTypeException | IncorrectFieldSizeException e) {
             throw new RuntimeException(e);
@@ -61,8 +59,6 @@ public class Encoder {
         try {
             if(buffer.get() != FLOAT_TYPE)
                 throw new IncorrectFieldTypeException("On decoding float at " + buffer.arrayOffset());
-            if(buffer.get() != sizeof(FLOAT_TYPE))
-                throw new IncorrectFieldSizeException("On decoding float at " + buffer.arrayOffset());
             return buffer.getFloat();
         } catch (IncorrectFieldTypeException | IncorrectFieldSizeException e) {
             throw new RuntimeException(e);
@@ -110,9 +106,7 @@ public class Encoder {
         try{
             if(buffer.get() != COORDINATE_TYPE)
                 throw new IncorrectFieldTypeException("On decoding array at " + buffer.arrayOffset());
-            if(buffer.get() != FLOAT_TYPE)
-                throw new IncorrectFieldTypeException("On decoding array at " + buffer.arrayOffset());
-            
+
             float latitude = buffer.getFloat();
             float longitude = buffer.getFloat();
 

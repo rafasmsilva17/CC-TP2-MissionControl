@@ -46,13 +46,11 @@ public class TLVPacket {
 
     public void writeInt(int toWrite){
         buffer[offset++] = Encoder.INTEGER_TYPE;
-        buffer[offset++] = Encoder.sizeof(Encoder.INTEGER_TYPE);
         writeIntBytes(toWrite);
     }
 
     public void writeFloat(float toWrite){
         buffer[offset++] = Encoder.FLOAT_TYPE;
-        buffer[offset++] = Encoder.sizeof(Encoder.FLOAT_TYPE);
         //write float
         writeIntBytes(Float.floatToIntBits(toWrite));
     }
@@ -87,9 +85,7 @@ public class TLVPacket {
 
     public void writeCoordinate(Coordinate coord){
         buffer[offset++] = Encoder.COORDINATE_TYPE;
-        buffer[offset++] = Encoder.DOUBLE_TYPE;
-
-        this.writeFloat(coord.getLatitude());
-        this.writeFloat(coord.getLongitude());
+        this.writeIntBytes(Float.floatToIntBits(coord.getLatitude()));
+        this.writeIntBytes(Float.floatToIntBits(coord.getLongitude()));
     }
 }

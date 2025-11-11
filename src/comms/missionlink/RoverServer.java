@@ -10,6 +10,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class RoverServer extends Thread{
     private DatagramSocket socket;
@@ -33,7 +34,7 @@ public class RoverServer extends Thread{
                     new DatagramPacket(buf, buf.length);
             try {
                 socket.receive(packet);
-                System.out.println("Rover Received:" + packet.getData().toString().trim());
+                System.out.println("Rover Received:" + Arrays.toString(packet.getData()).trim());
 
                 // Verificar se a missao esta correta (aqui por causa de DEBUG)
                 PhotoMission mission = new PhotoMission(ByteBuffer.wrap(packet.getData()));
