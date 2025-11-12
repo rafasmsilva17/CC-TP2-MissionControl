@@ -16,7 +16,6 @@ public class MotherShip {
     private static final HashMap<String, Integer> roverMissions = new HashMap<>();
 
     private static final HashMap<Integer, InetAddress> roversAddresses = new HashMap<>();
-    private static final MothershipML missionLinker = new MothershipML();
     private static MothershipServer missionLinkServer;
 
 
@@ -36,25 +35,17 @@ public class MotherShip {
 
 
     public void assignMissionTo(int roverID, Mission mission) {
+        if(!roversAddresses.containsKey(roverID)){
+            System.out.println("This rover is not registered! Stopping mission assignment.");
+            return;
+        }
         if (roverMissions.containsKey(mission.id)) {
             System.out.println("Attempt to assign previously assigned mission. Stopping!");
             return;
         }
         allMissions.put(mission.id, mission); // Isto não deve ficar aqui no final
         roverMissions.put(mission.id, roverID);
-        missionLinker.assignMission(roverID, mission);
-        missionLinkServer.addToConfirmationBuffer(roverID, mission.id);
+        missionLinkServer.assignMission(roverID, roversAddresses.get(roverID), mission);
         System.out.println("Mission sent to rover");
-    }
-
-    public static void reassignMissionTo(int roverID, String missionID){
-        if(!allMissions.containsKey(missionID)){
-            System.out.println("Trying to reassign mission that does not exist!" +
-                    "Are you sure this behaviour is intended?");
-            return;
-        }
-        missionLinker.assignMission(roverMissions.get(missionID), allMissions.get(missionID));
-        missionLinkServer.addToConfirmationBuffer(roverID, missionID);
-        System.out.println("Attempting to reassign mission " + missionID + " to rover " + roverID);
     }
 }

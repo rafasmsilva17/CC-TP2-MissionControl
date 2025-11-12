@@ -1,10 +1,10 @@
 package comms.packets;
 
 public class MissionRequestPacket extends TLVPacket implements RoverPacket {
-    public static final RoverPacketType type = RoverPacketType.REQUEST;
+    public static final PacketType type = PacketType.REQUEST;
 
     public MissionRequestPacket(){
         super();
-        writeByte((byte)type.toInteger());
+        writeByte((byte)type.toByte());
     }
 }

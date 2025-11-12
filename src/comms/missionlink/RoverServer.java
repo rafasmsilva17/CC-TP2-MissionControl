@@ -54,6 +54,10 @@ public class RoverServer extends Thread{
         }
     }
 
+    public void sendMissionTelemetry(){
+
+    }
+
     public void run(){
         while(true) {
             DatagramPacket packet =

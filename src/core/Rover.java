@@ -10,6 +10,7 @@ import java.util.Set;
 public class Rover {
     private static int id_counter = 0;
     private final int id;
+    private Long awakeTime = System.currentTimeMillis();
     private Battery battery = new Battery();
     // Priority Queue com as missoes passou para o mission handler
     private Set<Sample> collectedSamples; //amostras atualmente no rover
@@ -41,4 +42,22 @@ public class Rover {
         missionHandler.addMission(mission);
     }
 
+    // Isto não é implementaçao de thread
+    public void run(){
+        Mission currentMission = missionHandler.getCurrMission();
+        long timeToUpdate = System.currentTimeMillis() + currentMission.updateInterval;
+        while(true){
+            if(System.currentTimeMillis() >= timeToUpdate){
+                //missionServer.sendMissionTelemetry();
+                timeToUpdate += currentMission.updateInterval;
+            }
+            // updateRoverStatus()
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

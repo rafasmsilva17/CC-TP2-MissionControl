@@ -78,7 +78,8 @@ public class PhotoMission extends Mission{
     public String toString(){
         return "Mission " + id + " -> " +
                 "Priority " + priority + " -> " +
-                "Duraçao Maxima: " + tempoMaximo + " minutos | " +
+                "Maximum Duration : " + maxDuration + " minutes | " +
+                "Updates every " + updateInterval + " seconds | " +
                 "Position ( " + position.getLatitude() + " , " +
                 position.getLongitude() + " ) | " +
                 "Direction " + direction + " | " +

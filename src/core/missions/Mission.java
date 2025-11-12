@@ -16,11 +16,12 @@ import javax.management.InvalidAttributeValueException;
 
 public abstract class Mission implements Encodable {
     public static int ID_COUNTER = 0;
-    public int tempoMaximo = 10; // 10 segundos ou minutos
+    public int maxDuration = 10; // 10 segundos ou minutos
 
     public MissionType type;
     public String id;
     public Priority priority;
+    public int updateInterval = 15; // seconds
     public MissionTelemetry telemetry;
 
 
@@ -30,11 +31,11 @@ public abstract class Mission implements Encodable {
         this.priority = Priority.NORMAL;
     }
 
-    public Mission(Priority p, int duracaoMaxima){
+    public Mission(Priority p, int maxDuration){
         id = "M-".concat(String.format("%03d", ID_COUNTER));
         ID_COUNTER++;
         this.priority = p;
-        this.tempoMaximo = duracaoMaxima;
+        this.maxDuration = maxDuration;
     }
 
     public Mission(MissionType type ,Priority p, MissionTelemetry telemetry) throws InvalidAttributeValueException{
@@ -52,7 +53,8 @@ public abstract class Mission implements Encodable {
         type = MissionType.fromInteger(Encoder.decodeByte(buf));
         id = Encoder.decodeString(buf);
         priority = Priority.fromInteger(Encoder.decodeByte(buf));
-        tempoMaximo = Encoder.decodeInt(buf);
+        maxDuration = Encoder.decodeInt(buf);
+        updateInterval = Encoder.decodeByte(buf);
     }
 
     @Override
@@ -61,7 +63,8 @@ public abstract class Mission implements Encodable {
         packet.writeByte((byte)type.toInt());
         packet.writeString(id);
         packet.writeByte((byte)priority.toInteger());
-        packet.writeInt(tempoMaximo);
+        packet.writeInt(maxDuration);
+        packet.writeByte((byte)updateInterval);
         return packet;
     }
 

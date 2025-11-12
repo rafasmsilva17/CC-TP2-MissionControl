@@ -20,6 +20,8 @@ public class RoverMissionHandler extends Thread{
         parentRover = parent;
     }
 
+    public Mission getCurrMission(){ return currentMission; }
+
     public boolean hasMission(Mission mission){
         if (currentMission == null) return priorityQueue.contains(mission);
         return priorityQueue.contains(mission) || currentMission.equals(mission);
