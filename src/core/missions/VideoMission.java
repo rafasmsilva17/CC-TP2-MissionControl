@@ -20,8 +20,8 @@ public class VideoMission extends Mission{
         this.duration = duration;
     }
 
-    public VideoMission(ByteBuffer buf){
-        super(buf);
+    protected VideoMission(MissionType type, ByteBuffer buf){
+        super(type, buf);
         this.position = Encoder.decodeCoordinate(buf);
         this.direction = Encoder.decodeInt(buf);
         this.duration = Encoder.decodeInt(buf);

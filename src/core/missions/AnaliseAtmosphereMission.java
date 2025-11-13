@@ -24,8 +24,8 @@ public class AnaliseAtmosphereMission extends Mission {
     /**
      * Construtor para decodificar a missão a partir de um ByteBuffer.
      */
-    public AnaliseAtmosphereMission(ByteBuffer var1) {
-        super(var1);
+    public AnaliseAtmosphereMission(MissionType type, ByteBuffer var1) {
+        super(type, var1);
         this.position = Encoder.decodeCoordinate(var1);
         this.duration = Encoder.decodeInt(var1);
     }

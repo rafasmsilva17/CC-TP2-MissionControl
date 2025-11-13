@@ -16,8 +16,8 @@ public class AnaliseSampleMission extends Mission {
         this.sample_ID = sample_ID;
     }
 
-    public AnaliseSampleMission(ByteBuffer buf) {
-        super(buf);
+    public AnaliseSampleMission(MissionType type, ByteBuffer buf) {
+        super(type, buf);
         this.sample_ID = buf.getInt();
     }
 

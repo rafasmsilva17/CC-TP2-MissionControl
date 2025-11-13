@@ -23,6 +23,7 @@ public class Rover {
         missionServer = new RoverServer(this);
         missionServer.start();
         missionServer.setName("Rover" + id + " Server");
+        run();
         //missionHandler.start();
         //missionServer.sendRegistration();
     }
@@ -54,14 +55,20 @@ public class Rover {
 
     // Isto não é implementaçao de thread
     public void run(){
-        Mission currentMission = missionHandler.getCurrMission();
-        long timeToUpdate = System.currentTimeMillis() + currentMission.updateInterval;
+        Mission currentMission = null;
+        long lastUpdate = -1L;
         while(true){
-            if(System.currentTimeMillis() >= timeToUpdate){
-                //missionServer.sendMissionTelemetry();
-                timeToUpdate += currentMission.updateInterval;
+            currentMission = missionHandler.getCurrMission();
+            if(currentMission != null){
+                if (lastUpdate == -1L) lastUpdate = System.currentTimeMillis();
+                if(System.currentTimeMillis() > lastUpdate + currentMission.updateInterval * 1000L){
+                    missionServer.sendMissionTelemetry(currentMission);
+                    System.out.println("Sent mission telemetry");
+                    lastUpdate = System.currentTimeMillis() + currentMission.updateInterval * 1000L;
+                }
             }
-            // updateRoverStatus()
+
+            // updateRoverStatus
 
             try {
                 Thread.sleep(100);

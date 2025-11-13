@@ -1,13 +1,13 @@
 package comms.missionlink;
 
 import comms.Encoder;
-import comms.packets.ConfirmationPacket;
-import comms.packets.MissionRequestPacket;
-import comms.packets.PacketType;
-import comms.packets.RegisterRoverPacket;
+import comms.packets.*;
+import comms.telemetry.MissionTelemetry;
+import comms.telemetry.TelemetryPhoto;
 import core.Rover;
 import core.missions.Mission;
 import core.missions.PhotoMission;
+import core.missions.common.MissionType;
 
 import java.io.IOException;
 import java.net.*;
@@ -88,9 +88,28 @@ public class RoverServer extends Thread implements UDPServerLogic{
         }
     }
 
-    public void sendMissionTelemetry(){
 
+    public void sendMissionTelemetry(Mission mission){
+        MissionTelemetry telem = MissionTelemetry.fromMission(mission);
+        if (telem == null){
+            System.out.println("Trying to send telemetry for a nonexistent mission type?");
+            return;
+        }
+        try {
+            MissionTelemetryPacket telemPacket = new MissionTelemetryPacket(telem);
+            DatagramPacket packet = new DatagramPacket(telemPacket.getBuffer(),
+                    telemPacket.getBuffer().length,
+                    InetAddress.getByName(mothershipName),
+                    mothershipPort);
+            // Manda negativo para distinguir dos pacotes dos rovers
+            uServer.sendPacket(-Integer.parseInt((String) mission.id.substring(2)),
+                    packet);
+            System.out.println("[" + getName() + "] Sending Mission Telemetry. Will wait for ACK");
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     public void run(){
         while(true) {
@@ -105,14 +124,11 @@ public class RoverServer extends Thread implements UDPServerLogic{
                                 "Is this supposed to happen?");
                     }
                 } else if (packetT == PacketType.MISSION){
-                    PhotoMission mission = new PhotoMission(receivedData);
+                    Mission mission = Mission.fromBuffer(receivedData);
                     System.out.println("Rover received mission: " + mission);
                     parentRover.receiveMission(mission);
 
-                    // Simular packet loss
-                    if(ThreadLocalRandom.current().nextInt(0, 11) == 5){
-                        uServer.sendACK(parentRover.getId(), packet.getAddress(), packet.getPort());
-                    }
+                    uServer.sendACK(parentRover.getId(), packet.getAddress(), packet.getPort());
                     System.out.println("[" + getName() + "] Sent Mission ACK" );
                 } else {
                     System.out.println("[" + getName() + "] Received Packet of unexpected type: " +

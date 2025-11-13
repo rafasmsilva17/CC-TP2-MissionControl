@@ -4,6 +4,7 @@ package comms.missionlink;
 import comms.Encoder;
 import comms.packets.PacketType;
 import comms.packets.RegisterRoverPacket;
+import comms.telemetry.MissionTelemetry;
 import core.MotherShip;
 import core.missions.Mission;
 
@@ -34,6 +35,17 @@ public class MothershipServer extends Thread implements UDPServerLogic{
                     // se for request de missão, mandar missão e passa para o proximo
                     System.out.println("[MOTHERSHIP] Received mission request from " +
                             packet.getAddress() + ":" + packet.getPort());
+
+                } else if (packetT == PacketType.MISSIONTELEMETRY){
+                    System.out.println("Received mission telemetry!");
+                    MissionTelemetry telemetry = MissionTelemetry.fromBuffer(receivedData);
+                    if (telemetry == null) {
+                        System.out.println("[" + getName() + "] Received null telemetry");
+                    }
+                    System.out.println(telemetry);
+                    uServer.sendACK(-Integer.parseInt(telemetry.id.substring(2)), packet.getAddress(), packet.getPort());
+                    // TODO mandar telemetry para o HTTP
+
                 } else if (packetT == PacketType.REGISTER) {
                     // registo que o rover manda assim que é iniciado
                     int assignRoverID;

@@ -40,9 +40,17 @@ public class RoverMissionHandler extends Thread{
     }
 
     private void doMission(){
-        if (priorityQueue.isEmpty()) return;
-        if (currentMission == null) currentMission = priorityQueue.poll();
+        while (currentMission == null) currentMission = priorityQueue.poll();
         // Fazer missão de alguma forma
+        while(currentMission.isActive()){
+            System.out.println("Doing mission " + currentMission.id);
+            currentMission.start();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void run(){
@@ -61,7 +69,7 @@ public class RoverMissionHandler extends Thread{
                 if(!isEmpty) break;
                 requestMission();
             }
-
+            System.out.println("a");
             doMission();
             // Acabou missao
         }

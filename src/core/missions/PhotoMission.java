@@ -34,8 +34,8 @@ public class PhotoMission extends Mission{
         this.quantity = quantity;
     }
 
-    public PhotoMission(ByteBuffer buf){
-        super(buf);
+    protected PhotoMission(MissionType type, ByteBuffer buf){
+        super(type, buf);
         position = Encoder.decodeCoordinate(buf);
         direction = Encoder.decodeFloat(buf);
         quantity = Encoder.decodeInt(buf);
