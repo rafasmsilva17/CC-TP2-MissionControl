@@ -18,7 +18,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public class RoverServer extends Thread implements UDPServerLogic{
-    private UDPServer uServer;
+    private final UDPServer uServer;
+    private static final String mothershipName = "Mothership";
+    private static final int mothershipPort = 3001;
+
     private byte[] buf = new byte[1024];
     private final Rover parentRover;
 
@@ -39,8 +42,9 @@ public class RoverServer extends Thread implements UDPServerLogic{
         try {
             DatagramPacket packet = new DatagramPacket(registration.getBuffer(),
                     registration.getBuffer().length,
-                    InetAddress.getByName("localhost"),
-                    3001);
+                    InetAddress.getByName(mothershipName),
+                    mothershipPort);
+            System.out.println(InetAddress.getByName(mothershipName));
             uServer.sendPacket(packet);
             System.out.println("[ROVER SERVER] Registration sent!");
         } catch (IOException e) {
@@ -74,8 +78,8 @@ public class RoverServer extends Thread implements UDPServerLogic{
             // TODO mudar o hardcode do endereço da navemae
             DatagramPacket packet = new DatagramPacket(request.getBuffer(),
                     request.getBuffer().length,
-                    InetAddress.getByName("localhost"),
-                    3001);
+                    InetAddress.getByName(mothershipName),
+                    mothershipPort);
 
             uServer.sendPacket(packet);
             System.out.println("[ROVER SERVER] Mission request sent!");

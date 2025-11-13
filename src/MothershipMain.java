@@ -6,7 +6,7 @@ import core.missions.PhotoMission;
 import core.missions.common.Priority;
 
 
-public class Main {
+public class MothershipMain {
     /*
     static void main1(String[] args)  {
         PhotoMission miss = new PhotoMission(new int[]{0, 0}, 1, 2);

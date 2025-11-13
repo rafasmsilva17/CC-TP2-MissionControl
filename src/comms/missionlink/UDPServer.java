@@ -5,10 +5,7 @@ import comms.packets.ConfirmationPacket;
 import comms.packets.PacketType;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -28,6 +25,13 @@ public class UDPServer extends Thread{
         timeoutHandler.start();
     }
 
+    public String getHostName(){
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void run(){
         while(true) {

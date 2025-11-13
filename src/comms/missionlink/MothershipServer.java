@@ -17,6 +17,7 @@ public class MothershipServer extends Thread implements UDPServerLogic{
 
     public MothershipServer() throws SocketException {
         this.uServer = new UDPServer(3001, this);
+        System.out.println(uServer.getHostName());
         this.setName("MSUDP LogicThread");
         uServer.setName("MSUDP Thread");
         uServer.start();
