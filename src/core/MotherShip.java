@@ -1,23 +1,22 @@
 package core;
 
-import comms.missionlink.MothershipML;
 import comms.missionlink.MothershipServer;
 import core.missions.Mission;
 
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MotherShip {
     // Mapa {idMissao, Missao}
     private static final HashMap<String, Mission> allMissions = new HashMap<>();
-
     // Mapa {idMissao , idRover}
     private static final HashMap<String, Integer> roverMissions = new HashMap<>();
-
     private static final HashMap<Integer, InetAddress> roversAddresses = new HashMap<>();
-    private static MothershipServer missionLinkServer;
 
+    private static MothershipServer missionLinkServer;
+    private static int roverIDCounter = 0;
 
     public MotherShip() {
         try {
@@ -26,6 +25,25 @@ public class MotherShip {
         } catch (SocketException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static int assignRoverID(){
+        return roverIDCounter++;
+    }
+
+    public static boolean isRoverRegistered(InetAddress address){
+        return roversAddresses.containsValue(address);
+    }
+
+    public static int getRoverID(InetAddress address){
+        if(!isRoverRegistered(address)) return -1;
+        AtomicInteger roverID = new AtomicInteger();
+        roversAddresses.forEach((id, add) -> {
+            if(add == address){
+                roverID.set(id);
+            }
+        });
+        return roverID.get();
     }
 
     public static void registerRover(int roverID, InetAddress address){

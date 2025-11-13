@@ -4,6 +4,7 @@ import comms.Encoder;
 import core.missions.common.Coordinate;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class TLVPacket {
     // tamanho necessário para escrever cada tipo de dados.
@@ -14,14 +15,25 @@ public class TLVPacket {
     public final int SIZEFOR_BYTE       = 2;
 
     public int offset = 0;
-    private final byte[] buffer;
+    private byte[] buffer;
 
     public TLVPacket(){
         buffer = new byte[1024];
     }
 
+    public TLVPacket(TLVPacket tlv){
+        buffer = tlv.getBuffer();
+        offset = tlv.getOffset();
+    }
+
     public TLVPacket(int capacity){
        buffer = new byte[capacity];
+    }
+
+    public int getOffset(){ return offset; }
+
+    public void setBuffer(byte[] newBuf){
+        buffer = newBuf.clone();
     }
 
     public byte[] getBuffer(){

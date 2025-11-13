@@ -1,11 +1,13 @@
 package comms.missionlink;
 
 import comms.Encoder;
+import comms.packets.ConfirmationPacket;
 import comms.packets.PacketType;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -50,8 +52,16 @@ public class UDPServer extends Thread{
         }
     }
 
-    public void sendACK(){
+    public void sendACK(int packetIdentifier, InetAddress address, int port){
+        ConfirmationPacket ACK = new ConfirmationPacket(packetIdentifier);
+        try {
+            System.out.println("[" + getName() + "] Sending UDP ACK");
+            socket.send(new DatagramPacket(ACK.getBuffer(), ACK.getBuffer().length,
+                    address, port));
 
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // Esta função so deve ser chamada pelo timeoutHandler
@@ -82,6 +92,16 @@ public class UDPServer extends Thread{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // Mandar packet sem esperar por um ACK
+    public void sendPacket(DatagramPacket packet){
+        try{
+            socket.send(packet);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public boolean receiveACK(ByteBuffer packet){

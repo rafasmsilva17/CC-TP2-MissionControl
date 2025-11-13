@@ -3,6 +3,7 @@ package core.missions;
 
 import comms.Encodable;
 import comms.Encoder;
+import comms.packets.PacketType;
 import comms.packets.TLVPacket;
 import comms.telemetry.MissionTelemetry;
 import core.missions.common.MissionType;
@@ -60,6 +61,7 @@ public abstract class Mission implements Encodable {
     @Override
     public TLVPacket getEncodeData(){
         TLVPacket packet = new TLVPacket();
+        packet.writeByte(PacketType.MISSION.toByte());
         packet.writeByte((byte)type.toInt());
         packet.writeString(id);
         packet.writeByte((byte)priority.toInteger());

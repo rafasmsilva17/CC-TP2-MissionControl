@@ -1,12 +1,12 @@
 package comms.missionlink;
 
 import comms.Encoder;
+import comms.packets.MissionPacket;
 import core.missions.Mission;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Arrays;
 
 public class MothershipML {
     private final UDPServer uServer;
@@ -16,10 +16,9 @@ public class MothershipML {
     }
 
     public void assignMission(int roverID, InetAddress roverAddress, Mission mission){
-        byte[] buf = Encoder.encodeMission(mission);
-
+        MissionPacket misPacket = new MissionPacket(mission);
         DatagramPacket packet =
-                new DatagramPacket(buf, buf.length,
+                new DatagramPacket(misPacket.getBuffer(), misPacket.getBuffer().length,
                         roverAddress, 3000);
 
         uServer.sendPacket(roverID ,packet);

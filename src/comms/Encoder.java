@@ -1,5 +1,6 @@
 package comms;
 
+import comms.packets.TLVPacket;
 import core.missions.common.Coordinate;
 import core.missions.common.IncorrectFieldSizeException;
 import core.missions.common.IncorrectFieldTypeException;
@@ -31,6 +32,8 @@ public class Encoder {
     public static byte[] encode(Encodable e_obj){
         return e_obj.getEncodeData().getBuffer();
     }
+
+    public static TLVPacket encodeToPacket(Encodable e_obj) { return e_obj.getEncodeData(); }
 
     public static byte[] encodeMission(Mission mission){
         return encode(mission);

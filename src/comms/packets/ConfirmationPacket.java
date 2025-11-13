@@ -9,4 +9,10 @@ public class ConfirmationPacket extends TLVPacket implements RoverPacket {
         writeInt(identifier);
         writeString(missionID);
     }
+
+    public ConfirmationPacket(int identifier){
+        super();
+        writeByte((byte)type.toByte());
+        writeInt(identifier);
+    }
 }

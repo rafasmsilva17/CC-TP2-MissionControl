@@ -8,8 +8,7 @@ import core.missions.common.Sample;
 import java.util.Set;
 
 public class Rover {
-    private static int id_counter = 0;
-    private final int id;
+    private int id = -1;
     private Long awakeTime = System.currentTimeMillis();
     private Battery battery = new Battery();
     // Priority Queue com as missoes passou para o mission handler
@@ -20,15 +19,26 @@ public class Rover {
     private final RoverServer missionServer;
 
     public Rover(){
-        id = id_counter++;
         missionHandler = new RoverMissionHandler(this);
         missionServer = new RoverServer(this);
         missionServer.start();
-        missionHandler.start();
-        missionServer.sendRegistration();
+        missionServer.setName("Rover" + id + " Server");
+        //missionHandler.start();
+        //missionServer.sendRegistration();
     }
 
     public int getId(){ return id; }
+
+    public void setId(int assignedID){
+        if(id != -1) return; // so pode ser usada uma vez
+        id = assignedID;
+        System.out.println("Im registered as Rover " + assignedID);
+        missionHandler.start(); // ja esta registado, pode começar a fazer missões
+    }
+
+    public boolean isRegistered(){
+        return (id != -1);
+    }
 
     public RoverServer getServer(){ return missionServer; }
 
