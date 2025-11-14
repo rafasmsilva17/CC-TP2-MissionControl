@@ -42,9 +42,9 @@ public class RoverMissionHandler extends Thread{
     private void doMission(){
         while (currentMission == null) currentMission = priorityQueue.poll();
         // Fazer missão de alguma forma
+        currentMission.start(parentRover.getId());
         while(currentMission.isActive()){
             System.out.println("Doing mission " + currentMission.id);
-            currentMission.start();
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

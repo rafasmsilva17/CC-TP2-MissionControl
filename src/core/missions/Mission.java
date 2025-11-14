@@ -17,10 +17,11 @@ import javax.management.InvalidAttributeValueException;
 
 public abstract class Mission implements Encodable {
     public static int ID_COUNTER = 1;
-    public int maxDuration = 10; // 10 segundos ou minutos
+    public int maxDuration = 10 * 60 ; // segundos
 
     public MissionType type;
     public String id;
+    public int executedByRover = -1;
     public Priority priority;
     public int updateInterval = 15; // seconds
     public MissionTelemetry telemetry;
@@ -56,12 +57,19 @@ public abstract class Mission implements Encodable {
         //type = MissionType.fromInteger(Encoder.decodeByte(buf));
         this.type = type;
         id = Encoder.decodeString(buf);
+        executedByRover = Encoder.decodeInt(buf);
         priority = Priority.fromInteger(Encoder.decodeByte(buf));
         maxDuration = Encoder.decodeInt(buf);
         updateInterval = Encoder.decodeByte(buf);
     }
 
+    //public abstract void executeMission();
+
     public void finish(){
+        if (executedByRover == -1) {
+            System.out.println("This mission seems to not have been assigned! Cant finish it.");
+            return;
+        }
         active = false;
     }
 
@@ -69,12 +77,13 @@ public abstract class Mission implements Encodable {
         return active;
     }
 
-    public void start(){
+    public void start(int assignedToRover){
+        this.executedByRover = assignedToRover;
         this.startTime = System.currentTimeMillis();
     }
 
-    public long getTTL(){
-        return (System.currentTimeMillis() - startTime);
+    public int getTTL(){
+        return maxDuration - (int)((System.currentTimeMillis() - startTime) / 1000);
     }
 
     @Override
@@ -83,8 +92,9 @@ public abstract class Mission implements Encodable {
         packet.writeByte(PacketType.MISSION.toByte());
         packet.writeByte((byte)type.toInt());
         packet.writeString(id);
+        packet.writeInt(executedByRover);
         packet.writeByte((byte)priority.toInteger());
-        packet.writeInt(maxDuration);
+        packet.writeInt((int)(maxDuration));
         packet.writeByte((byte)updateInterval);
         return packet;
     }

@@ -1,6 +1,8 @@
 package core;
 
+import comms.gc.MsHTTP;
 import comms.missionlink.MothershipServer;
+import comms.telemetry.MissionTelemetry;
 import core.missions.Mission;
 
 import java.net.InetAddress;
@@ -16,11 +18,13 @@ public class MotherShip {
     private static final HashMap<Integer, InetAddress> roversAddresses = new HashMap<>();
 
     private static MothershipServer missionLinkServer;
+    private static MsHTTP serverHTTP;
     private static int roverIDCounter = 0;
 
     public MotherShip() {
         try {
             missionLinkServer = new MothershipServer();
+            serverHTTP = new MsHTTP();
             missionLinkServer.start();
         } catch (SocketException e) {
             throw new RuntimeException(e);
@@ -65,5 +69,10 @@ public class MotherShip {
         roverMissions.put(mission.id, roverID);
         missionLinkServer.assignMission(roverID, roversAddresses.get(roverID), mission);
         System.out.println("Mission sent to rover");
+    }
+
+
+    public static void handleMissionTelemetry(MissionTelemetry telem){
+        serverHTTP.addMissionTelemetry(telem);
     }
 }

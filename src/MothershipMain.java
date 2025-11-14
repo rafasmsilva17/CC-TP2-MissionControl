@@ -59,7 +59,7 @@ public class MothershipMain {
     public static void main(String[] args){
 
         Coordinate coord = new Coordinate(88.54f, 32.64f);
-        PhotoMission miss = new PhotoMission(coord, 1, 2, 60, Priority.URGENT);
+        PhotoMission miss = new PhotoMission(coord, 1, 2, 60 * 10, Priority.URGENT);
 
         MotherShip mothership = new MotherShip();
         //Rover rover0 = new Rover();

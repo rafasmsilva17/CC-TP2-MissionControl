@@ -14,18 +14,22 @@ import java.io.StringWriter;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executors;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-public class MsHTTP {
+public class MsHTTP{
     private static final int PORT = 8080;
     private final HttpServer server;
 
-    private static final List<RoverTelemetry> rovers = new ArrayList<>();
-    private static final List<MissionTelemetry> missions = new ArrayList<>();
+    // ID do rover como key em ambos os maps
+    private static final ConcurrentHashMap<Integer, RoverTelemetry> rovers = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Integer, MissionTelemetry> missions = new ConcurrentHashMap<>();
 
     public MsHTTP() {
         try {
@@ -33,25 +37,30 @@ public class MsHTTP {
             server.createContext("/api/rovers", new RoversHandler(this));
             server.createContext("/api/missions", new MissionsHandler(this));
 
-            server.setExecutor(null);
-            server.start();
-            System.out.println("Server started on port " + PORT);
+            server.setExecutor(Executors.newCachedThreadPool());
 
+            server.start();
+            System.out.println("HTTP API started on port: " + PORT);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    public void addMissionTelemetry(MissionTelemetry telem){
+        missions.put(telem.roverID, telem);
+    }
+
     public List<MissionTelemetry> getMissions(){
-        return new ArrayList<>(missions);
+        return new ArrayList<>(missions.values());
     }
     public List<RoverTelemetry> getRovers(){
-        return new ArrayList<>(rovers);
+        return new ArrayList<>(rovers.values());
     }
 
     public static void sendXML(HttpExchange exchange, Document doc) throws IOException {
         try {
             String xml = xmlToString(doc);
+            System.out.println(xml);
             exchange.getResponseHeaders().add("Content-Type", "application/xml; charset=UTF-8");
             exchange.sendResponseHeaders(200, xml.getBytes().length);
             try (OutputStream os = exchange.getResponseBody()) {
@@ -72,9 +81,5 @@ public class MsHTTP {
         return writer.toString();
     }
 
-
-    public static void main(String[] args){
-        MsHTTP httpServer = new MsHTTP();
-    }
 }
 

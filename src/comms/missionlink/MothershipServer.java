@@ -44,6 +44,7 @@ public class MothershipServer extends Thread implements UDPServerLogic{
                     }
                     System.out.println(telemetry);
                     uServer.sendACK(-Integer.parseInt(telemetry.id.substring(2)), packet.getAddress(), packet.getPort());
+                    MotherShip.handleMissionTelemetry(telemetry);
                     // TODO mandar telemetry para o HTTP
 
                 } else if (packetT == PacketType.REGISTER) {

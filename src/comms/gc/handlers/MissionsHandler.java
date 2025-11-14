@@ -35,7 +35,9 @@ public class MissionsHandler implements HttpHandler {
                 Element e = doc.createElement("mission");
                 ArrayList<Attr> attributes = (ArrayList<Attr>) mission.getAttributes();
                 for (Attr attribute : attributes) {
-                    e.setAttributeNode(attribute);
+                    Attr newAttr = doc.createAttribute(attribute.getName());
+                    newAttr.setValue(attribute.getValue());
+                    e.setAttributeNode(newAttr);
                 }
                 root.appendChild(e);
             }
