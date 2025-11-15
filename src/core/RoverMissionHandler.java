@@ -13,11 +13,13 @@ public class RoverMissionHandler extends Thread{
     private final PriorityQueue<Mission> priorityQueue =
             new PriorityQueue<>(Comparator.comparingInt((Mission m) -> m.priority.toInteger()).reversed());
     private Mission currentMission = null;
+    private Mission lastFinishedMission = null;
     private final Lock missionQueueLock = new ReentrantLock();
 
 
     public RoverMissionHandler(Rover parent){
         parentRover = parent;
+        setName("Rover " + parentRover.getId() + " Mission Handler");
     }
 
     public Mission getCurrMission(){ return currentMission; }
@@ -45,12 +47,25 @@ public class RoverMissionHandler extends Thread{
         currentMission.start(parentRover.getId());
         while(currentMission.isActive()){
             System.out.println("Doing mission " + currentMission.id);
+            boolean finished = currentMission.executeMission(parentRover);
+            if (finished){
+                finishMission();
+                return;
+            }
+
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    private void finishMission(){
+        lastFinishedMission = currentMission;
+        currentMission = null;
+        parentRover.notifyMissionFinish();
+        System.out.println("[" + getName() + "] Finished mission!");
     }
 
     public void run(){
@@ -75,4 +90,11 @@ public class RoverMissionHandler extends Thread{
         }
     }
 
+    public Mission getLastFinishedMission() {
+        return lastFinishedMission;
+    }
+
+    public void setLastFinishedMission(Mission lastFinishedMission) {
+        this.lastFinishedMission = lastFinishedMission;
+    }
 }

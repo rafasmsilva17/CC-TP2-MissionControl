@@ -6,6 +6,7 @@ import comms.Encoder;
 import comms.packets.PacketType;
 import comms.packets.TLVPacket;
 import comms.telemetry.MissionTelemetry;
+import core.Rover;
 import core.missions.common.MissionType;
 import core.missions.common.Priority;
 
@@ -25,8 +26,11 @@ public abstract class Mission implements Encodable {
     public Priority priority;
     public int updateInterval = 15; // seconds
     public MissionTelemetry telemetry;
+
     private long startTime;
     private boolean active = true;
+    public boolean roverArrived = false;
+
 
 
     public Mission(){
@@ -63,13 +67,15 @@ public abstract class Mission implements Encodable {
         updateInterval = Encoder.decodeByte(buf);
     }
 
-    //public abstract void executeMission();
+    public abstract MissionTelemetry getTelemetry();
+
+    /// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Mission execution missions //
+    /// ///////////////////////////
+
+    public abstract boolean executeMission(Rover rover);
 
     public void finish(){
-        if (executedByRover == -1) {
-            System.out.println("This mission seems to not have been assigned! Cant finish it.");
-            return;
-        }
         active = false;
     }
 
@@ -81,6 +87,9 @@ public abstract class Mission implements Encodable {
         this.executedByRover = assignedToRover;
         this.startTime = System.currentTimeMillis();
     }
+
+    /// //////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     public int getTTL(){
         return maxDuration - (int)((System.currentTimeMillis() - startTime) / 1000);
@@ -108,6 +117,7 @@ public abstract class Mission implements Encodable {
             default -> null;
         };
     }
+
 
     private Boolean checkTelemetryType(MissionType type, MissionTelemetry telemetry){
         Boolean isCompatible = true;

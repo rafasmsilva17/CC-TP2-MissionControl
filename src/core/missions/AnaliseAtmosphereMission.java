@@ -2,6 +2,8 @@ package core.missions;
 
 import comms.Encoder;
 import comms.packets.TLVPacket;
+import comms.telemetry.MissionTelemetry;
+import core.Rover;
 import core.missions.common.Coordinate;
 import core.missions.common.MissionType;
 
@@ -30,6 +32,15 @@ public class AnaliseAtmosphereMission extends Mission {
         this.duration = Encoder.decodeInt(var1);
     }
 
+    @Override
+    public MissionTelemetry getTelemetry() {
+        return null;
+    }
+
+    @Override
+    public boolean executeMission(Rover rover) {
+        return false;
+    }
 
 
     public Coordinate getPosition() {

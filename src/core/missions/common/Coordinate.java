@@ -1,8 +1,8 @@
 package core.missions.common;
 
 public class Coordinate {
-    private final float latitude;
-    private final float longitude;
+    private float latitude;
+    private float longitude;
 
     public Coordinate(float lat, float lon) {
         if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
@@ -11,6 +11,10 @@ public class Coordinate {
         this.latitude = lat;
         this.longitude = lon;
     }
+
+    public void setLatitude(float newL) { this.latitude = newL; }
+
+    public void setLongitude(float newL) { this.longitude= newL; }
 
     public float getLatitude() {
         return latitude;

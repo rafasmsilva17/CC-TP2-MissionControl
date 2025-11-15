@@ -1,6 +1,8 @@
 package core.missions;
 
 import comms.packets.TLVPacket;
+import comms.telemetry.MissionTelemetry;
+import core.Rover;
 import core.missions.common.MissionType;
 
 import java.nio.ByteBuffer;
@@ -21,6 +23,15 @@ public class AnaliseSampleMission extends Mission {
         this.sample_ID = buf.getInt();
     }
 
+    @Override
+    public MissionTelemetry getTelemetry() {
+        return null;
+    }
+
+    @Override
+    public boolean executeMission(Rover rover) {
+        return false;
+    }
 
 
     public int getSample_ID() {

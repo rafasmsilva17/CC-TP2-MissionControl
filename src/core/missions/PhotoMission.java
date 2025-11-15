@@ -3,16 +3,24 @@ package core.missions;
 
 import comms.Encoder;
 import comms.packets.TLVPacket;
+import comms.telemetry.MissionTelemetry;
+import comms.telemetry.TelemetryPhoto;
+import core.Rover;
 import core.missions.common.Coordinate;
 import core.missions.common.MissionType;
 import core.missions.common.Priority;
 
 import java.nio.ByteBuffer;
+import java.util.Random;
 
 public class PhotoMission extends Mission{
     private Coordinate position;
     private float direction;
     private int quantity;
+
+    private int currentPhotoProgress = 0;
+    private int photosTaken = 0;
+
 
     public PhotoMission(Coordinate position, int direction, int quantity) {
         super();
@@ -39,6 +47,48 @@ public class PhotoMission extends Mission{
         position = Encoder.decodeCoordinate(buf);
         direction = Encoder.decodeFloat(buf);
         quantity = Encoder.decodeInt(buf);
+    }
+
+    @Override
+    public MissionTelemetry getTelemetry() {
+        return new TelemetryPhoto(type, this);
+    }
+
+    private void moveToObjective(Rover rover){
+        float latitude = rover.getPosition().getLatitude();
+        float longitude = rover.getPosition().getLongitude();
+        float distX = position.getLatitude() - latitude;
+        float distY = position.getLongitude() - longitude;
+
+        float dist = (float) Math.sqrt(distX * distX + distY * distY);
+
+        System.out.println(dist);
+        if (dist <= rover.getSpeed()) roverArrived = true;
+
+        rover.setLatitude(latitude + ((distX / dist) * rover.getSpeed()));
+        rover.setLongitude(longitude+ ((distY / dist) * rover.getSpeed()));
+        System.out.println(rover.getPosition().getLatitude());
+        System.out.println(rover.getPosition().getLongitude());
+
+    }
+
+
+    @Override
+    public boolean executeMission(Rover rover) {
+        if (!roverArrived) moveToObjective(rover);
+        else {
+            Random rand = new Random();
+            currentPhotoProgress += rand.nextInt(15);
+            if (currentPhotoProgress >= 100){
+                currentPhotoProgress = 0;
+                photosTaken++;
+            }
+            if (photosTaken == quantity){
+                finish();
+                return true;
+            }
+        }
+        return false;
     }
 
     public Coordinate getPosition() {

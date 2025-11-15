@@ -4,6 +4,9 @@ import comms.Encoder;
 import java.nio.ByteBuffer;
 
 import comms.packets.TLVPacket;
+import comms.telemetry.MissionTelemetry;
+import comms.telemetry.TelemetryVideo;
+import core.Rover;
 import core.missions.common.Coordinate;
 import core.missions.common.MissionType;
 
@@ -25,6 +28,16 @@ public class VideoMission extends Mission{
         this.position = Encoder.decodeCoordinate(buf);
         this.direction = Encoder.decodeInt(buf);
         this.duration = Encoder.decodeInt(buf);
+    }
+
+    @Override
+    public MissionTelemetry getTelemetry() {
+        return new TelemetryVideo(type, this);
+    }
+
+    @Override
+    public boolean executeMission(Rover rover) {
+        return false;
     }
 
     public Coordinate getPosition() {

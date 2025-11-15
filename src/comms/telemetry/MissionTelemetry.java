@@ -81,14 +81,6 @@ public abstract class MissionTelemetry implements Encodable {
         return packet;
     }
 
-    public static MissionTelemetry fromMission(Mission mission){
-        MissionType type = mission.type;
-        return switch (type){
-            case PHOTO -> new TelemetryPhoto(type, (PhotoMission) mission);
-            default -> null;
-        };
-    }
-
     public static MissionTelemetry fromBuffer(ByteBuffer buf){
         MissionType type = MissionType.fromInteger(Encoder.decodeByte(buf));
         return switch (type){

@@ -90,7 +90,7 @@ public class RoverServer extends Thread implements UDPServerLogic{
 
 
     public void sendMissionTelemetry(Mission mission){
-        MissionTelemetry telem = MissionTelemetry.fromMission(mission);
+        MissionTelemetry telem = mission.getTelemetry();
         if (telem == null){
             System.out.println("Trying to send telemetry for a nonexistent mission type?");
             return;

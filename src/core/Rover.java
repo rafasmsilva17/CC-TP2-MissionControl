@@ -3,9 +3,12 @@ package core;
 import comms.missionlink.RoverServer;
 import core.missions.Mission;
 import core.missions.PhotoMission;
+import core.missions.common.Coordinate;
 import core.missions.common.Sample;
 
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Rover {
     private int id = -1;
@@ -13,6 +16,10 @@ public class Rover {
     private Battery battery = new Battery();
     // Priority Queue com as missoes passou para o mission handler
     private Set<Sample> collectedSamples; //amostras atualmente no rover
+    private float speed = 2f;
+    private final Coordinate position = new Coordinate(0, 0);
+    private boolean sendMissionFinish = false;
+    private final Lock missionFinishLock = new ReentrantLock();
 
     // TODO mission handler thread
     private final RoverMissionHandler missionHandler;
@@ -43,6 +50,21 @@ public class Rover {
 
     public RoverServer getServer(){ return missionServer; }
 
+    public void notifyMissionFinish(){
+        missionFinishLock.lock();
+        sendMissionFinish = true;
+        missionFinishLock.unlock();
+    }
+
+    private boolean toSendMissionFinish(){
+        missionFinishLock.lock();
+        try{
+            return sendMissionFinish;
+        } finally {
+            missionFinishLock.unlock();
+        }
+
+    }
 
     public void receiveMission(Mission mission){
         if(missionHandler.hasMission(mission)){
@@ -58,6 +80,17 @@ public class Rover {
         Mission currentMission = null;
         long lastUpdate = -1L;
         while(true){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (toSendMissionFinish()){
+                missionServer.sendMissionTelemetry(missionHandler.getLastFinishedMission());
+                sendMissionFinish = false;
+                continue;
+            }
             currentMission = missionHandler.getCurrMission();
             if(currentMission != null){
                 if (lastUpdate == -1L) lastUpdate = System.currentTimeMillis();
@@ -70,11 +103,26 @@ public class Rover {
 
             // updateRoverStatus
 
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
         }
+    }
+
+    public Coordinate getPosition() {
+        return position;
+    }
+
+    public void setLatitude(float latitude){
+        this.position.setLatitude(latitude);
+    }
+
+    public void setLongitude(float longitude){
+        this.position.setLongitude(longitude);
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float newS){
+        this.speed = newS;
     }
 }
