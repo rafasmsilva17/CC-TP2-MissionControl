@@ -32,13 +32,7 @@ public class MissionsHandler implements HttpHandler {
             Element root = doc.createElement("missions");
             doc.appendChild(root);
             for (MissionTelemetry mission : missions) {
-                Element e = doc.createElement("mission");
-                ArrayList<Attr> attributes = (ArrayList<Attr>) mission.getAttributes();
-                for (Attr attribute : attributes) {
-                    Attr newAttr = doc.createAttribute(attribute.getName());
-                    newAttr.setValue(attribute.getValue());
-                    e.setAttributeNode(newAttr);
-                }
+                Element e = mission.getElement(doc);
                 root.appendChild(e);
             }
 

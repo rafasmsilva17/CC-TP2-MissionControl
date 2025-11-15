@@ -12,8 +12,10 @@ import core.missions.common.MissionType;
 
 public class VideoMission extends Mission{
     private Coordinate position;
-    private int direction; // em graus (N,S,E,O)
+    private float direction; // em graus (N,S,E,O)
     private int duration;
+
+    private long videoStartTime = -1;
 
     public VideoMission(Coordinate position, int direction, int duration){
         super();
@@ -26,7 +28,7 @@ public class VideoMission extends Mission{
     protected VideoMission(MissionType type, ByteBuffer buf){
         super(type, buf);
         this.position = Encoder.decodeCoordinate(buf);
-        this.direction = Encoder.decodeInt(buf);
+        this.direction = Encoder.decodeFloat(buf);
         this.duration = Encoder.decodeInt(buf);
     }
 
@@ -37,6 +39,11 @@ public class VideoMission extends Mission{
 
     @Override
     public boolean executeMission(Rover rover) {
+        if (!roverArrived) roverArrived = rover.moveTowards(position);
+        else {
+            if (videoStartTime == -1) videoStartTime = System.currentTimeMillis();
+            return (System.currentTimeMillis() - videoStartTime) / 1000 >= duration;
+        }
         return false;
     }
 
@@ -48,11 +55,11 @@ public class VideoMission extends Mission{
         this.position = position;
     }
 
-    public int getDirection() {
+    public float getDirection() {
         return direction;
     }
 
-    public void setDirection(int direction) {
+    public void setDirection(float direction) {
         this.direction = direction;
     }
 

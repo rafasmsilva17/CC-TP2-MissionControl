@@ -31,13 +31,14 @@ public class TelemetryPhoto extends MissionTelemetry {
         this.quantity = Encoder.decodeInt(buf);
     }
 
-    public List<Attr> getAttributes(){
-        List<Attr> attributes = super.getAttributes();
-        attributes.add(createAttr("position", coord.toString()));
-        attributes.add(createAttr("direction", String.valueOf(direction)));
-        attributes.add(createAttr("quantity", String.valueOf(quantity)));
-
-        return attributes;
+    public Element getElement(Document doc){
+        Element base = super.getElement(doc);
+        Element specific = doc.createElement("info");
+        specific.setAttribute("position", coord.toString());
+        specific.setAttribute("direction", String.valueOf(direction));
+        specific.setAttribute("quantity", String.valueOf(quantity));
+        base.appendChild(specific);
+        return base;
     }
 
     public TLVPacket getEncodeData(){

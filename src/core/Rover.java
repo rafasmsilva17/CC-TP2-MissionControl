@@ -125,4 +125,20 @@ public class Rover {
     public void setSpeed(float newS){
         this.speed = newS;
     }
+
+    public boolean moveTowards(Coordinate objective){
+        float latitude = position.getLatitude();
+        float longitude = position.getLongitude();
+        float distX = objective.getLatitude() - latitude;
+        float distY = objective.getLongitude() - longitude;
+
+        float dist = (float) Math.sqrt(distX * distX + distY * distY);
+
+        if (dist <= speed) return true;
+
+        System.out.println("Distance to objective: " + dist);
+        this.setLatitude(latitude + ((distX / dist) * speed));
+        this.setLongitude(longitude+ ((distY / dist) * speed));
+        return false;
+    }
 }

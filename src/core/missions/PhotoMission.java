@@ -54,28 +54,9 @@ public class PhotoMission extends Mission{
         return new TelemetryPhoto(type, this);
     }
 
-    private void moveToObjective(Rover rover){
-        float latitude = rover.getPosition().getLatitude();
-        float longitude = rover.getPosition().getLongitude();
-        float distX = position.getLatitude() - latitude;
-        float distY = position.getLongitude() - longitude;
-
-        float dist = (float) Math.sqrt(distX * distX + distY * distY);
-
-        System.out.println(dist);
-        if (dist <= rover.getSpeed()) roverArrived = true;
-
-        rover.setLatitude(latitude + ((distX / dist) * rover.getSpeed()));
-        rover.setLongitude(longitude+ ((distY / dist) * rover.getSpeed()));
-        System.out.println(rover.getPosition().getLatitude());
-        System.out.println(rover.getPosition().getLongitude());
-
-    }
-
-
     @Override
     public boolean executeMission(Rover rover) {
-        if (!roverArrived) moveToObjective(rover);
+        if (!roverArrived) roverArrived = rover.moveTowards(position);
         else {
             Random rand = new Random();
             currentPhotoProgress += rand.nextInt(15);

@@ -43,4 +43,12 @@ public class Coordinate {
 
         return planetRadiusKM * c;
     }
+
+    @Override
+    public String toString() {
+        return "(" +
+                latitude + " , " +
+                longitude + ")"
+                ;
+    }
 }
