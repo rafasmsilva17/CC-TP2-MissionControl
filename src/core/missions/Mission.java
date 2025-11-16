@@ -114,6 +114,8 @@ public abstract class Mission implements Encodable {
         return switch (type){
             case PHOTO -> new PhotoMission(type, buf);
             case VIDEO -> new VideoMission(type, buf);
+            case GET_SAMPLE -> new GetSampleMission(type, buf);
+            case ANALYSE_SAMPLE -> new AnaliseSampleMission(type, buf);
             default -> null;
         };
     }

@@ -119,6 +119,13 @@ public class Encoder {
         return decoded;
     }
 
+    public static byte[] decodeByteArray(ByteBuffer buffer) {
+        int arrayLen = (buffer.get() << 8 | buffer.get());
+        byte[] decoded = new byte[arrayLen];
+        for (int i = 0; i < arrayLen; i++) decoded[i] = decodeByte(buffer);
+        return decoded;
+    }
+
     public static Coordinate decodeCoordinateFull(ByteBuffer buffer){
         try{
             if(buffer.get() != COORDINATE_TYPE)

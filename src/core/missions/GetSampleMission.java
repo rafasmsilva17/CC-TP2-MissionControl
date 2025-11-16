@@ -8,20 +8,23 @@ import core.Rover;
 import core.missions.common.Coordinate;
 import core.missions.common.MissionType;
 import core.missions.common.Priority;
+import core.missions.common.Sample;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class GetSampleMission extends Mission{
     private Coordinate position;
     private int quantity;
     private float radius;
-    private int samplesDone = 0;
 
     private boolean roverArrived = false;
     private float currentSampleProgress = 0;
     private Coordinate currentSamplePosition = null;
     private boolean roverArrivedAtSample = false;
+    private final List<Sample> samplesCollected = new ArrayList<>();
 
 
     public GetSampleMission(Coordinate position, int quantity, float radius, int maxDuration, Priority p){
@@ -63,10 +66,12 @@ public class GetSampleMission extends Mission{
             } else {
                 currentSampleProgress += rand.nextInt(15);
                 if (currentSampleProgress >= 100){
+                    Sample newSample = new Sample(rover.getId());
+                    rover.addSample(newSample);
+                    samplesCollected.add(newSample);
                     currentSampleProgress = 0;
-                    samplesDone++;
                 }
-                if (samplesDone == quantity){
+                if (samplesCollected.size() == quantity){
                     finish();
                     return true;
                 }
@@ -109,5 +114,9 @@ public class GetSampleMission extends Mission{
         this.radius = radius;
     }
 
-    public int getSamplesDone(){ return samplesDone; }
+    public int getSamplesDone(){ return samplesCollected.size(); }
+
+    public List<String> getCollectedSamplesIDS(){
+        return new ArrayList<>(samplesCollected.stream().map(Sample::getId).toList());
+    }
 }

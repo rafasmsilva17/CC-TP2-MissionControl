@@ -19,7 +19,7 @@ public class MotherShip {
 
     private static MothershipServer missionLinkServer;
     private static MsHTTP serverHTTP;
-    private static int roverIDCounter = 0;
+    private static int roverIDCounter = 1;
 
     public MotherShip() {
         try {

@@ -101,6 +101,10 @@ public class TLVPacket {
         }
     }
 
+    public void writeStringArray(String[] toWrite){
+        writeArray(toWrite);
+    }
+
     private void writeArraySize(int size){
         // Dois bytes para tamanho do array (32767 elementos)
         buffer[offset++] = (byte)(size >>> 8);
@@ -121,6 +125,14 @@ public class TLVPacket {
             writeString(s);
         }
     }
+
+    public void writeByteArray(byte[] toWrite){
+        writeArraySize(toWrite.length);
+        for (byte b : toWrite) {
+            writeByte(b);
+        }
+    }
+
     // ///////
 
     public void writeCoordinateFull(Coordinate coord){

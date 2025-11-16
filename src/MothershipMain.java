@@ -1,6 +1,9 @@
 import comms.missionlink.RoverServer;
 import core.MotherShip;
 import core.Rover;
+import core.missions.AnaliseSampleMission;
+import core.missions.GetSampleMission;
+import core.missions.VideoMission;
 import core.missions.common.Coordinate;
 import core.missions.PhotoMission;
 import core.missions.common.Priority;
@@ -58,8 +61,11 @@ public class MothershipMain {
 
     public static void main(String[] args){
 
-        Coordinate coord = new Coordinate(88.54f, 32.64f);
+        Coordinate coord = new Coordinate(10.54f, 10.64f);
         PhotoMission miss = new PhotoMission(coord, 1, 2, 60 * 10, Priority.URGENT);
+        GetSampleMission miss1 = new GetSampleMission(coord, 2, 5.0f, 600, Priority.URGENT);
+        AnaliseSampleMission miss11 = new AnaliseSampleMission("0-1");
+        VideoMission miss2 = new VideoMission(coord, 1, 60);
 
         MotherShip mothership = new MotherShip();
         //Rover rover0 = new Rover();
@@ -69,7 +75,7 @@ public class MothershipMain {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        mothership.assignMissionTo(0, miss);
+        mothership.assignMissionTo(1, miss1);
 
     }
 }

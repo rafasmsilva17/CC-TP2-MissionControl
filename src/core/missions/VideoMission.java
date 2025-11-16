@@ -17,6 +17,7 @@ public class VideoMission extends Mission{
 
     private long videoStartTime = -1;
 
+    // duration in seconds
     public VideoMission(Coordinate position, int direction, int duration){
         super();
         this.type = MissionType.VIDEO;

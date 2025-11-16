@@ -73,6 +73,7 @@ public abstract class MissionTelemetry extends Telemetry {
             case PHOTO -> new TelemetryPhoto(type, buf);
             case VIDEO -> new TelemetryVideo(type, buf);
             case GET_SAMPLE -> new TelemetryGetSample(type, buf);
+            case ANALYSE_SAMPLE -> new TelemetryAnaliseSample(type, buf);
             default -> null;
         };
     }

@@ -6,16 +6,18 @@ import core.missions.PhotoMission;
 import core.missions.common.Coordinate;
 import core.missions.common.Sample;
 
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Rover {
+
     private int id = -1;
     private Long awakeTime = System.currentTimeMillis();
     private Battery battery = new Battery();
     // Priority Queue com as missoes passou para o mission handler
-    private Set<Sample> collectedSamples; //amostras atualmente no rover
+    private HashMap<String, Sample> collectedSamples = new HashMap<>(); //amostras atualmente no rover
     private float speed = 2f;
     private final Coordinate position = new Coordinate(0, 0);
     private boolean sendMissionFinish = false;
@@ -126,6 +128,19 @@ public class Rover {
         this.speed = newS;
     }
 
+    public void addSample(Sample newSample){
+        collectedSamples.put(newSample.getId(), newSample);
+    }
+
+    public List<Sample> getCollectedSamples(){
+        return new ArrayList<>(collectedSamples.values());
+    }
+
+    public List<String> getCollectedSamplesIDS(){
+        return new ArrayList<>(collectedSamples.keySet());
+    }
+
+
     public boolean moveTowards(Coordinate objective){
         float latitude = position.getLatitude();
         float longitude = position.getLongitude();
@@ -139,6 +154,10 @@ public class Rover {
         System.out.println("Distance to objective: " + dist);
         this.setLatitude(latitude + ((distX / dist) * speed));
         this.setLongitude(longitude+ ((distY / dist) * speed));
+        // variar velocidade
+        float MAXIMUM_SPEED = 2f;
+        float MINIMUM_SPEED = 0.5f;
+        speed = new Random().nextFloat(MINIMUM_SPEED, MAXIMUM_SPEED);
         return false;
     }
 }

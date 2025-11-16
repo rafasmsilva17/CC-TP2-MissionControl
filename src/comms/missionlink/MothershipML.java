@@ -15,6 +15,7 @@ public class MothershipML {
         this.uServer = uServer;
     }
 
+    // TODO identifier deste pacote tbm deve conter mission ID de alguma forma
     public void assignMission(int roverID, InetAddress roverAddress, Mission mission){
         MissionPacket misPacket = new MissionPacket(mission);
         DatagramPacket packet =
