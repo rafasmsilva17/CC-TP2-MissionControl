@@ -18,6 +18,7 @@ public class TelemetryAnaliseSample extends MissionTelemetry {
         super(type, mission);
         this.sampleID = mission.getSample_ID();
         this.analysisResult = mission.getResult();
+        if (analysisResult == null) analysisResult = new byte[]{};
     }
 
     public TelemetryAnaliseSample(MissionType type, ByteBuffer buf){

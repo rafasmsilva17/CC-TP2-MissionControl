@@ -5,7 +5,8 @@ public enum PacketType {
     REQUEST,
     REGISTER,
     MISSION,
-    MISSIONTELEMETRY;
+    MISSIONTELEMETRY,
+    MISSIONCANCEL;
 
     public static PacketType fromByte(byte b){
         return switch (b){
@@ -14,6 +15,7 @@ public enum PacketType {
             case 0x02 -> REGISTER;
             case 0x03 -> MISSION;
             case 0x04 -> MISSIONTELEMETRY;
+            case 0x05 -> MISSIONCANCEL;
             default -> null;
         };
     }
@@ -25,6 +27,7 @@ public enum PacketType {
             case REGISTER -> 0x02;
             case MISSION -> 0x03;
             case MISSIONTELEMETRY -> 0x04;
+            case MISSIONCANCEL -> 0x05;
         };
     }
 }

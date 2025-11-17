@@ -3,18 +3,13 @@ package comms.missionlink;
 import comms.Encoder;
 import comms.packets.*;
 import comms.telemetry.MissionTelemetry;
-import comms.telemetry.TelemetryPhoto;
 import core.Rover;
 import core.missions.Mission;
-import core.missions.PhotoMission;
-import core.missions.common.MissionType;
 
 import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public class RoverServer extends Thread implements UDPServerLogic{
@@ -123,6 +118,10 @@ public class RoverServer extends Thread implements UDPServerLogic{
                         System.out.println("Received register but I am already registered..." +
                                 "Is this supposed to happen?");
                     }
+                } else if (packetT == PacketType.MISSIONCANCEL){
+                    parentRover.cancelMission();
+                    System.out.println("[" + getName() + "] SENT MISSION CANCEL SIGNAL");
+                    uServer.sendACK(parentRover.getId(), packet.getAddress(), packet.getPort());
                 } else if (packetT == PacketType.MISSION){
                     Mission mission = Mission.fromBuffer(receivedData);
                     if (mission == null) {

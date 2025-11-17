@@ -24,7 +24,8 @@ public class Rover {
     private boolean sendMissionFinish = false;
     private final Lock missionFinishLock = new ReentrantLock();
 
-    // TODO mission handler thread
+    private boolean cancelSignal = false;
+
     private final RoverMissionHandler missionHandler;
     private final RoverServer missionServer;
 
@@ -38,20 +39,6 @@ public class Rover {
         //missionServer.sendRegistration();
     }
 
-    public int getId(){ return id; }
-
-    public void setId(int assignedID){
-        if(id != -1) return; // so pode ser usada uma vez
-        id = assignedID;
-        System.out.println("Im registered as Rover " + assignedID);
-        missionHandler.start(); // ja esta registado, pode começar a fazer missões
-    }
-
-    public boolean isRegistered(){
-        return (id != -1);
-    }
-
-    public RoverServer getServer(){ return missionServer; }
 
     public void notifyMissionFinish(){
         missionFinishLock.lock();
@@ -92,6 +79,11 @@ public class Rover {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
+            }
+
+            if (cancelSignal){
+                missionHandler.cancelMission();
+                cancelSignal = false;
             }
 
             if (toSendMissionFinish()){
@@ -146,6 +138,20 @@ public class Rover {
         return new ArrayList<>(collectedSamples.keySet());
     }
 
+    public int getId(){ return id; }
+
+    public void setId(int assignedID){
+        if(id != -1) return; // so pode ser usada uma vez
+        id = assignedID;
+        System.out.println("Im registered as Rover " + assignedID);
+        missionHandler.start(); // ja esta registado, pode começar a fazer missões
+    }
+
+    public boolean isRegistered(){
+        return (id != -1);
+    }
+
+    public RoverServer getServer(){ return missionServer; }
 
     public boolean moveTowards(Coordinate objective){
         float latitude = position.getLatitude();
@@ -165,5 +171,9 @@ public class Rover {
         float MINIMUM_SPEED = 0.5f;
         speed = new Random().nextFloat(MINIMUM_SPEED, MAXIMUM_SPEED);
         return false;
+    }
+
+    public void cancelMission(){
+        cancelSignal = true;
     }
 }

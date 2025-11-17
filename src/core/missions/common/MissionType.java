@@ -8,7 +8,7 @@ public enum MissionType {
     DEPOSIT_SAMPLE,
     ANALYSE_ATMO;
 
-    public static MissionType fromInteger(int x){
+    public static MissionType fromByte(byte x){
         return switch (x) {
             case 0 -> PHOTO;
             case 1 -> VIDEO;
@@ -20,7 +20,7 @@ public enum MissionType {
         };
     }
 
-    public int toInt(){
+    public byte toByte(){
         return switch (this) {
             case PHOTO -> 0;
             case VIDEO -> 1;
@@ -28,7 +28,6 @@ public enum MissionType {
             case ANALYSE_SAMPLE -> 3;
             case DEPOSIT_SAMPLE -> 4;
             case ANALYSE_ATMO -> 5;
-            default -> -1;
         };
     }
 

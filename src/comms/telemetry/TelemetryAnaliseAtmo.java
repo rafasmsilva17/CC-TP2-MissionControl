@@ -19,6 +19,7 @@ public class TelemetryAnaliseAtmo extends MissionTelemetry {
         super(type, mission);
         this.coord = mission.getPosition();
         this.analysisResult = mission.getResult();
+        if (analysisResult == null) analysisResult = new byte[]{};
     }
 
     public TelemetryAnaliseAtmo(MissionType type, ByteBuffer buf){

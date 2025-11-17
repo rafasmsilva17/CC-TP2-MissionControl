@@ -1,27 +1,25 @@
 package comms.telemetry;
 
-import comms.Encodable;
 import comms.Encoder;
 import comms.Telemetry;
 import comms.packets.PacketType;
 import comms.packets.TLVPacket;
 import core.missions.Mission;
-import core.missions.VideoMission;
+import core.missions.common.MissionStatus;
 import core.missions.common.MissionType;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public abstract class MissionTelemetry extends Telemetry {
     public MissionType type;
     public int roverID;
     public String id;
     public int ttl;
+    public MissionStatus status;
+    public boolean finished = false;
     public Date arrivalTime = new Date(System.currentTimeMillis());
 
     protected MissionTelemetry(){
@@ -34,6 +32,8 @@ public abstract class MissionTelemetry extends Telemetry {
         this.id = mission.id;
         this.roverID = mission.executedByRover;
         this.ttl = mission.getTTL();
+        this.status = mission.status;
+        this.finished = !mission.active;
     }
 
     // Construtor utilizado por receiver de telemetria
@@ -43,6 +43,7 @@ public abstract class MissionTelemetry extends Telemetry {
         this.id = Encoder.decodeString(buffer);
         this.roverID = Encoder.decodeInt(buffer);
         this.ttl = Encoder.decodeInt(buffer); // time left till mission reaches max duration
+        this.status = MissionStatus.fromByte(Encoder.decodeByte(buffer));
     }
 
 
@@ -51,6 +52,7 @@ public abstract class MissionTelemetry extends Telemetry {
         base.setAttribute("rover", String.valueOf(roverID));
         base.setAttribute("type", type.name());
         base.setAttribute("ttl", ttl + " seconds");
+        base.setAttribute("status", status.name());
 
         return base;
     }
@@ -58,16 +60,17 @@ public abstract class MissionTelemetry extends Telemetry {
     public TLVPacket getEncodeData(){
         TLVPacket packet = new TLVPacket();
         packet.writeByte(PacketType.MISSIONTELEMETRY.toByte());
-        packet.writeByte((byte)type.toInt());
+        packet.writeByte((byte)type.toByte());
         packet.writeString(id);
         packet.writeInt(roverID);
         packet.writeInt(ttl);
+        packet.writeByte(status.toByte());
         return packet;
     }
 
     // TODO Acabar isto, ou seja, implementar todas as missões e as suas telemetrias
     public static MissionTelemetry fromBuffer(ByteBuffer buf){
-        MissionType type = MissionType.fromInteger(Encoder.decodeByte(buf));
+        MissionType type = MissionType.fromByte(Encoder.decodeByte(buf));
         return switch (type){
             case PHOTO -> new TelemetryPhoto(type, buf);
             case VIDEO -> new TelemetryVideo(type, buf);

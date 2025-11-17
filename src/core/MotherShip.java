@@ -75,4 +75,12 @@ public class MotherShip {
     public static void handleMissionTelemetry(MissionTelemetry telem){
         serverHTTP.addMissionTelemetry(telem);
     }
+
+    public void cancelRoverMission(int roverID){
+        if (!roversAddresses.containsKey(roverID)){
+            System.out.println("This rover is not registered! Stopping mission cancel.");
+            return;
+        }
+        missionLinkServer.sendCancelMission(roverID, roversAddresses.get(roverID));
+    }
 }

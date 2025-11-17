@@ -65,7 +65,6 @@ public class MsHTTP{
     public static void sendXML(HttpExchange exchange, Document doc) throws IOException {
         try {
             String xml = xmlToString(doc);
-            System.out.println(xml);
             exchange.getResponseHeaders().add("Content-Type", "application/xml; charset=UTF-8");
             exchange.sendResponseHeaders(200, xml.getBytes().length);
             try (OutputStream os = exchange.getResponseBody()) {

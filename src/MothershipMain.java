@@ -74,8 +74,11 @@ public class MothershipMain {
             throw new RuntimeException(e);
         }
         mothership.assignMissionTo(1, miss3);
-        mothership.assignMissionTo(1, miss1);
-        mothership.assignMissionTo(1, miss2);
-        mothership.assignMissionTo(1, miss);
+        try {
+            Thread.sleep(6000); // iniciar o servidor do rover durante este tempo
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        mothership.cancelRoverMission(1);
     }
 }

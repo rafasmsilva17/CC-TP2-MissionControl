@@ -2,6 +2,7 @@ package core;
 
 import comms.missionlink.RoverServer;
 import core.missions.Mission;
+import core.missions.common.MissionStatus;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -15,7 +16,7 @@ public class RoverMissionHandler extends Thread{
     private Mission currentMission = null;
     private Mission lastFinishedMission = null;
     private final Lock missionQueueLock = new ReentrantLock();
-
+    private final Lock cancelLock = new ReentrantLock();
 
     public RoverMissionHandler(Rover parent){
         parentRover = parent;
@@ -41,6 +42,14 @@ public class RoverMissionHandler extends Thread{
         server.sendMissionRequest();
     }
 
+    public void cancelMission(){
+        if (currentMission == null){
+            System.out.println("No mission in progress! Cannot cancel");
+            return;
+        }
+        currentMission.cancel();
+    }
+
     private void doMission(){
         while (currentMission == null) currentMission = priorityQueue.poll();
         // Fazer missão de alguma forma
@@ -58,14 +67,27 @@ public class RoverMissionHandler extends Thread{
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+
+            // Missao foi cancelada
+            if (currentMission.status == MissionStatus.CANCELED){
+                queueCancelTelem();
+                return;
+            }
         }
     }
 
     private void finishMission(){
+        currentMission.finish();
         lastFinishedMission = currentMission;
         currentMission = null;
         parentRover.notifyMissionFinish();
         System.out.println("[" + getName() + "] Finished mission!");
+    }
+
+    private void queueCancelTelem(){
+        lastFinishedMission = currentMission;
+        currentMission = null;
+        parentRover.notifyMissionFinish();
     }
 
     public void run(){
@@ -84,7 +106,6 @@ public class RoverMissionHandler extends Thread{
                 if(!isEmpty) break;
                 requestMission();
             }
-            System.out.println("a");
             doMission();
             // Acabou missao
         }

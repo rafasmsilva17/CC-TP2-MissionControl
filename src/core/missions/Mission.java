@@ -7,6 +7,7 @@ import comms.packets.PacketType;
 import comms.packets.TLVPacket;
 import comms.telemetry.MissionTelemetry;
 import core.Rover;
+import core.missions.common.MissionStatus;
 import core.missions.common.MissionType;
 import core.missions.common.Priority;
 
@@ -25,10 +26,11 @@ public abstract class Mission implements Encodable {
     public int executedByRover = -1;
     public Priority priority;
     public int updateInterval = 15; // seconds
+    public MissionStatus status = MissionStatus.WAITING;
     public MissionTelemetry telemetry;
 
     private long startTime;
-    private boolean active = true;
+    public boolean active = true;
     public boolean roverArrived = false;
 
 
@@ -65,6 +67,7 @@ public abstract class Mission implements Encodable {
         priority = Priority.fromInteger(Encoder.decodeByte(buf));
         maxDuration = Encoder.decodeInt(buf);
         updateInterval = Encoder.decodeByte(buf);
+        status = MissionStatus.fromByte(Encoder.decodeByte(buf));
     }
 
     public abstract MissionTelemetry getTelemetry();
@@ -75,8 +78,14 @@ public abstract class Mission implements Encodable {
 
     public abstract boolean executeMission(Rover rover);
 
+    public void cancel(){
+        active = false;
+        status = MissionStatus.CANCELED;
+    }
+
     public void finish(){
         active = false;
+        status = MissionStatus.FINISHED;
     }
 
     public boolean isActive(){
@@ -86,6 +95,7 @@ public abstract class Mission implements Encodable {
     public void start(int assignedToRover){
         this.executedByRover = assignedToRover;
         this.startTime = System.currentTimeMillis();
+        this.status = MissionStatus.IN_PROGRESS;
     }
 
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,17 +109,18 @@ public abstract class Mission implements Encodable {
     public TLVPacket getEncodeData(){
         TLVPacket packet = new TLVPacket();
         packet.writeByte(PacketType.MISSION.toByte());
-        packet.writeByte((byte)type.toInt());
+        packet.writeByte((byte)type.toByte());
         packet.writeString(id);
         packet.writeInt(executedByRover);
         packet.writeByte((byte)priority.toInteger());
         packet.writeInt((int)(maxDuration));
         packet.writeByte((byte)updateInterval);
+        packet.writeByte(status.toByte());
         return packet;
     }
 
     public static Mission fromBuffer(ByteBuffer buf){
-        MissionType type = MissionType.fromInteger(Encoder.decodeByte(buf));
+        MissionType type = MissionType.fromByte(Encoder.decodeByte(buf));
         assert type != null;
         return switch (type){
             case PHOTO -> new PhotoMission(type, buf);

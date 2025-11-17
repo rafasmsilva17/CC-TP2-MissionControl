@@ -2,6 +2,7 @@ package comms.missionlink;
 
 
 import comms.Encoder;
+import comms.packets.MissionCancelPacket;
 import comms.packets.PacketType;
 import comms.packets.RegisterRoverPacket;
 import comms.telemetry.MissionTelemetry;
@@ -83,5 +84,14 @@ public class MothershipServer extends Thread implements UDPServerLogic{
 
     public void assignMission(int roverID, InetAddress roverAddress, Mission mission){
         missionLinker.assignMission(roverID, roverAddress, mission);
+    }
+
+    public void sendCancelMission(int roverID, InetAddress address){
+        MissionCancelPacket missionCancel = new MissionCancelPacket();
+        DatagramPacket packet = new DatagramPacket(missionCancel.getBuffer(),
+                missionCancel.getBuffer().length,
+                address,
+                3000);
+        uServer.sendPacket(roverID, packet);
     }
 }
