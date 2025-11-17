@@ -17,6 +17,7 @@ public class AnaliseSampleMission extends Mission {
     private final String sample_ID;
     private int resultSize = -1;
     private byte[] result;
+    private int counter = 0;
     private int bytesAnalized = 0;
 
     public AnaliseSampleMission(String sample_ID) {
@@ -46,10 +47,10 @@ public class AnaliseSampleMission extends Mission {
         }
         int bytesToAnalyze = rand.nextInt(resultSize / 10);
         for (int i = 0; i < bytesToAnalyze; i++) {
-            result[bytesAnalized++] = (byte)rand.nextInt(255);
-            if (bytesAnalized == resultSize) return true;
+            result[counter++] = (byte)rand.nextInt(255);
+            if (counter == resultSize) return true;
         }
-        return bytesAnalized == resultSize;
+        return counter == resultSize;
     }
 
 

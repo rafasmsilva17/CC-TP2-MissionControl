@@ -15,7 +15,6 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -30,12 +29,14 @@ public class MsHTTP{
     // ID do rover como key em ambos os maps
     private static final ConcurrentHashMap<Integer, RoverTelemetry> rovers = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Integer, MissionTelemetry> missions = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, MissionTelemetry> allMissions = new ConcurrentHashMap<>();
 
     public MsHTTP() {
         try {
             server = HttpServer.create(new InetSocketAddress(PORT), 0);
             server.createContext("/api/rovers", new RoversHandler(this));
             server.createContext("/api/missions", new MissionsHandler(this));
+            server.createContext("/api/missions/all", new MissionsHandler(this, true));
 
             server.setExecutor(Executors.newCachedThreadPool());
 
@@ -48,10 +49,14 @@ public class MsHTTP{
 
     public void addMissionTelemetry(MissionTelemetry telem){
         missions.put(telem.roverID, telem);
+        allMissions.put(telem.id, telem);
     }
 
     public List<MissionTelemetry> getMissions(){
         return new ArrayList<>(missions.values());
+    }
+    public List<MissionTelemetry> getAllMissions(){
+        return new ArrayList<>(allMissions.values());
     }
     public List<RoverTelemetry> getRovers(){
         return new ArrayList<>(rovers.values());

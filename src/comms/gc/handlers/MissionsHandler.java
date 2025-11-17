@@ -16,14 +16,25 @@ import java.util.ArrayList;
 
 public class MissionsHandler implements HttpHandler {
     private final MsHTTP server;
+    private boolean all = false;
 
     public MissionsHandler(MsHTTP httpServer){
         this.server = httpServer;
     }
 
+    public MissionsHandler(MsHTTP httpServer, boolean isAll){
+        this.server = httpServer;
+        this.all = isAll;
+    }
+
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
-        ArrayList<MissionTelemetry> missions = (ArrayList<MissionTelemetry>) server.getMissions();
+        ArrayList<MissionTelemetry> missions = null;
+        if (all){
+            missions = (ArrayList<MissionTelemetry>) server.getAllMissions();
+        } else {
+            missions = (ArrayList<MissionTelemetry>) server.getMissions();
+        }
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {

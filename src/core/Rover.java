@@ -1,6 +1,7 @@
 package core;
 
 import comms.missionlink.RoverServer;
+import core.missions.AnaliseSampleMission;
 import core.missions.Mission;
 import core.missions.PhotoMission;
 import core.missions.common.Coordinate;
@@ -73,6 +74,11 @@ public class Rover {
             System.out.println("[ROVER " + id + "] " + " Received duplicate mission. " +
                     "Is there packet loss?");
             return;
+        }
+        if (mission instanceof AnaliseSampleMission){
+            String sampleID = ((AnaliseSampleMission) mission).getSample_ID();
+            System.out.println("[ROVER " + id + "] Received mission for sample that I don't have!");
+            if (!collectedSamples.containsKey(sampleID)) return;
         }
         missionHandler.addMission(mission);
     }

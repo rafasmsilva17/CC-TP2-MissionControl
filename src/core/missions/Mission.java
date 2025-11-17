@@ -116,6 +116,7 @@ public abstract class Mission implements Encodable {
             case VIDEO -> new VideoMission(type, buf);
             case GET_SAMPLE -> new GetSampleMission(type, buf);
             case ANALYSE_SAMPLE -> new AnaliseSampleMission(type, buf);
+            case ANALYSE_ATMO -> new AnaliseAtmosphereMission(type, buf);
             default -> null;
         };
     }

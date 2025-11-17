@@ -3,42 +3,56 @@ package core.missions;
 import comms.Encoder;
 import comms.packets.TLVPacket;
 import comms.telemetry.MissionTelemetry;
+import comms.telemetry.TelemetryAnaliseAtmo;
 import core.Rover;
 import core.missions.common.Coordinate;
 import core.missions.common.MissionType;
+import core.missions.common.Priority;
 
 import java.nio.ByteBuffer;
+import java.util.Random;
 
 
 public class AnaliseAtmosphereMission extends Mission {
 
     private Coordinate position;
-    private int duration;   
 
+    private int resultSize = -1;
+    private byte[] result;
+    private int counter = 0;
 
-    public AnaliseAtmosphereMission(Coordinate var1, int var2) {
-        // Você precisará adicionar ANALISE_ATMOSPHERE ao seu enum MissionType
+    public AnaliseAtmosphereMission(Coordinate position, int maxDuration, Priority p){
+        super(p, maxDuration);
         this.type = MissionType.ANALYSE_ATMO;
-        this.position = var1;
-        this.duration = var2;
+        this.position = position;
     }
 
-    /**
-     * Construtor para decodificar a missão a partir de um ByteBuffer.
-     */
-    public AnaliseAtmosphereMission(MissionType type, ByteBuffer var1) {
-        super(type, var1);
-        this.position = Encoder.decodeCoordinate(var1);
-        this.duration = Encoder.decodeInt(var1);
+    public AnaliseAtmosphereMission(MissionType type, ByteBuffer buf) {
+        super(type, buf);
+        this.position = Encoder.decodeCoordinate(buf);
     }
 
     @Override
     public MissionTelemetry getTelemetry() {
-        return null;
+        return new TelemetryAnaliseAtmo(type, this);
     }
 
     @Override
     public boolean executeMission(Rover rover) {
+        if (!roverArrived) roverArrived = rover.moveTowards(position);
+        else {
+            Random rand = new Random();
+            if (resultSize == -1) {
+                resultSize = rand.nextInt(10,256);
+                result = new byte[resultSize];
+            }
+            int bytesToAnalyze = rand.nextInt(1,resultSize/5);
+            for (int i = 0; i < bytesToAnalyze; i++){
+                result[counter++] = (byte)rand.nextInt(255);
+                if (counter == resultSize) return true;
+            }
+            return counter == resultSize;
+        }
         return false;
     }
 
@@ -51,23 +65,15 @@ public class AnaliseAtmosphereMission extends Mission {
         this.position = var1;
     }
 
-    public int getDuration() {
-        return this.duration;
+    public byte[] getResult(){
+        return result;
     }
-
-    public void setDuration(int var1) {
-        this.duration = var1;
-    }
-
 
     @Override
     public TLVPacket getEncodeData() {
-        TLVPacket var1 = new TLVPacket();
-        var1.writeByte((byte)this.type.toInt());
-        var1.writeString(this.id);
-        var1.writeCoordinate(this.position);
-        var1.writeInt(this.duration);
-        return var1;
+        TLVPacket packet = super.getEncodeData();
+        packet.writeCoordinate(position);
+        return packet;
     }
 
     @Override
@@ -75,7 +81,6 @@ public class AnaliseAtmosphereMission extends Mission {
         StringBuilder var1 = new StringBuilder();
         var1.append("Mission ").append(this.id).append(" -> ");
         var1.append("Position ( ").append(this.position.getLatitude()).append(" , ").append(this.position.getLongitude()).append(" ) | ");
-        var1.append("Duration ").append(this.duration);
         return var1.toString();
     }
 }

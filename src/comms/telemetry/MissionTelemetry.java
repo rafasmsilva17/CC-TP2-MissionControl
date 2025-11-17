@@ -46,7 +46,6 @@ public abstract class MissionTelemetry extends Telemetry {
     }
 
 
-    // TODO mudar para retornar um elementos inves de attributo, fica melhor
     public Element getElement(Document doc){
         Element base = doc.createElement(id);
         base.setAttribute("rover", String.valueOf(roverID));
@@ -74,6 +73,7 @@ public abstract class MissionTelemetry extends Telemetry {
             case VIDEO -> new TelemetryVideo(type, buf);
             case GET_SAMPLE -> new TelemetryGetSample(type, buf);
             case ANALYSE_SAMPLE -> new TelemetryAnaliseSample(type, buf);
+            case ANALYSE_ATMO -> new TelemetryAnaliseAtmo(type, buf);
             default -> null;
         };
     }

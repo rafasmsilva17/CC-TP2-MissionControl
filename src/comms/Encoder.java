@@ -94,7 +94,7 @@ public class Encoder {
 
     public static String decodeString(ByteBuffer buffer){
         // 2 bytes para o tamanho da string
-        int stringLen = (buffer.get() << 8 | buffer.get());
+        int stringLen = ((buffer.get() & 0xff) << 8 | (buffer.get() & 0xff));
         StringBuilder strBuild = new StringBuilder();
         for (int i = 0; i < stringLen; i++){
             strBuild.append((char)buffer.get());
@@ -104,7 +104,7 @@ public class Encoder {
 
     // Array decoding
     public static int[] decodeIntArray(ByteBuffer buffer){
-        int arrayLen = (buffer.get() << 8 | buffer.get());
+        int arrayLen = ((buffer.get() & 0xff) << 8 | (buffer.get() & 0xff));
         int[] decoded = new int[arrayLen];
         for(int i = 0; i < arrayLen; i++){
             decoded[i] = buffer.getInt();
@@ -113,14 +113,14 @@ public class Encoder {
     }
 
     public static String[] decodeStringArray(ByteBuffer buffer){
-        int arrayLen = (buffer.get() << 8 | buffer.get());
+        int arrayLen = ((buffer.get() & 0xff) << 8 | (buffer.get() & 0xff));
         String[] decoded = new String[arrayLen];
         for (int i = 0; i < arrayLen; i++) decoded[i] = decodeString(buffer);
         return decoded;
     }
 
     public static byte[] decodeByteArray(ByteBuffer buffer) {
-        int arrayLen = (buffer.get() << 8 | buffer.get());
+        int arrayLen = ((buffer.get() & 0xff) << 8 | (buffer.get() & 0xff));
         byte[] decoded = new byte[arrayLen];
         for (int i = 0; i < arrayLen; i++) decoded[i] = decodeByte(buffer);
         return decoded;

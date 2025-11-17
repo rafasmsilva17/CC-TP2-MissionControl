@@ -125,10 +125,16 @@ public class RoverServer extends Thread implements UDPServerLogic{
                     }
                 } else if (packetT == PacketType.MISSION){
                     Mission mission = Mission.fromBuffer(receivedData);
+                    if (mission == null) {
+                        System.out.println("[" + getName() + "] Something went wrong when receiving mission!");
+                        continue;
+                    }
                     System.out.println("Rover received mission: " + mission);
                     parentRover.receiveMission(mission);
-
-                    uServer.sendACK(parentRover.getId(), packet.getAddress(), packet.getPort());
+                    int missionID = Integer.parseInt(mission.id.substring(2));
+                    int digits = missionID/10;
+                    int packetID = (int)(parentRover.getId()*(Math.pow(10, digits+1))) + missionID;
+                    uServer.sendACK(packetID, packet.getAddress(), packet.getPort());
                     System.out.println("[" + getName() + "] Sent Mission ACK" );
                 } else {
                     System.out.println("[" + getName() + "] Received Packet of unexpected type: " +

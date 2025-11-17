@@ -22,7 +22,7 @@ public class PhotoMission extends Mission{
     private int photosTaken = 0;
 
 
-    public PhotoMission(Coordinate position, int direction, int quantity) {
+    private PhotoMission(Coordinate position, int direction, int quantity) {
         super();
         this.type = MissionType.PHOTO;
         this.position = position;

@@ -1,11 +1,8 @@
 import comms.missionlink.RoverServer;
 import core.MotherShip;
 import core.Rover;
-import core.missions.AnaliseSampleMission;
-import core.missions.GetSampleMission;
-import core.missions.VideoMission;
+import core.missions.*;
 import core.missions.common.Coordinate;
-import core.missions.PhotoMission;
 import core.missions.common.Priority;
 
 
@@ -64,8 +61,9 @@ public class MothershipMain {
         Coordinate coord = new Coordinate(10.54f, 10.64f);
         PhotoMission miss = new PhotoMission(coord, 1, 2, 60 * 10, Priority.URGENT);
         GetSampleMission miss1 = new GetSampleMission(coord, 2, 5.0f, 600, Priority.URGENT);
-        AnaliseSampleMission miss11 = new AnaliseSampleMission("0-1");
+        AnaliseSampleMission miss11 = new AnaliseSampleMission("1-1");
         VideoMission miss2 = new VideoMission(coord, 1, 60);
+        AnaliseAtmosphereMission miss3 = new AnaliseAtmosphereMission(coord, 60 * 10, Priority.NORMAL);
 
         MotherShip mothership = new MotherShip();
         //Rover rover0 = new Rover();
@@ -75,7 +73,9 @@ public class MothershipMain {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        mothership.assignMissionTo(1, miss3);
         mothership.assignMissionTo(1, miss1);
-
+        mothership.assignMissionTo(1, miss2);
+        mothership.assignMissionTo(1, miss);
     }
 }
