@@ -2,8 +2,8 @@ package comms.telemetry;
 
 import comms.Encoder;
 import comms.Telemetry;
-import comms.packets.PacketType;
-import comms.packets.TLVPacket;
+import comms.packets.common.PacketType;
+import comms.packets.common.TLVPacket;
 import core.missions.Mission;
 import core.missions.common.MissionStatus;
 import core.missions.common.MissionType;

@@ -2,7 +2,7 @@ package comms.missionlink;
 
 import comms.Encoder;
 import comms.packets.ConfirmationPacket;
-import comms.packets.PacketType;
+import comms.packets.common.PacketType;
 
 import java.io.IOException;
 import java.net.*;

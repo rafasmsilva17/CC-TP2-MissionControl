@@ -3,8 +3,8 @@ package core.missions;
 
 import comms.Encodable;
 import comms.Encoder;
-import comms.packets.PacketType;
-import comms.packets.TLVPacket;
+import comms.packets.common.PacketType;
+import comms.packets.common.TLVPacket;
 import comms.telemetry.MissionTelemetry;
 import core.Rover;
 import core.missions.common.MissionStatus;

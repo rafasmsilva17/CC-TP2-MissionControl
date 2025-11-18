@@ -3,7 +3,7 @@ package core.missions;
 import comms.Encoder;
 import java.nio.ByteBuffer;
 
-import comms.packets.TLVPacket;
+import comms.packets.common.TLVPacket;
 import comms.telemetry.MissionTelemetry;
 import comms.telemetry.TelemetryVideo;
 import core.Rover;

@@ -1,7 +1,7 @@
 package comms.telemetry;
 
 import comms.Encoder;
-import comms.packets.TLVPacket;
+import comms.packets.common.TLVPacket;
 import core.missions.AnaliseSampleMission;
 import core.missions.common.MissionType;
 import org.w3c.dom.Document;

@@ -1,10 +1,9 @@
-package comms.packets;
+package comms.packets.common;
 
 import comms.Encoder;
 import core.missions.common.Coordinate;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class TLVPacket {
     // tamanho necessário para escrever cada tipo de dados.

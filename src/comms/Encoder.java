@@ -1,6 +1,6 @@
 package comms;
 
-import comms.packets.TLVPacket;
+import comms.packets.common.TLVPacket;
 import core.missions.common.Coordinate;
 import core.missions.common.IncorrectFieldSizeException;
 import core.missions.common.IncorrectFieldTypeException;

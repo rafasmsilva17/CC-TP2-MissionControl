@@ -58,27 +58,9 @@ public class MothershipMain {
 
     public static void main(String[] args){
 
-        Coordinate coord = new Coordinate(10.54f, 10.64f);
-        PhotoMission miss = new PhotoMission(coord, 1, 2, 60 * 10, Priority.URGENT);
-        GetSampleMission miss1 = new GetSampleMission(coord, 2, 5.0f, 600, Priority.URGENT);
-        AnaliseSampleMission miss11 = new AnaliseSampleMission("1-1");
-        VideoMission miss2 = new VideoMission(coord, 1, 60);
-        AnaliseAtmosphereMission miss3 = new AnaliseAtmosphereMission(coord, 60 * 10, Priority.NORMAL);
-
         MotherShip mothership = new MotherShip();
         //Rover rover0 = new Rover();
 
-        try {
-            Thread.sleep(10000); // iniciar o servidor do rover durante este tempo
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        mothership.assignMissionTo(1, miss3);
-        try {
-            Thread.sleep(6000); // iniciar o servidor do rover durante este tempo
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        mothership.cancelRoverMission(1);
+        //mothership.cancelRoverMission(1);
     }
 }

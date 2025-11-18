@@ -32,15 +32,10 @@ public class RoversHandler implements HttpHandler {
             Document doc = db.newDocument();
             Element root = doc.createElement("rovers");
             doc.appendChild(root);
-            for (RoverTelemetry rover : rovers ) {
-                Element e = doc.createElement("rover");
-                ArrayList<Attr> attributes = (ArrayList<Attr>) rover.getAttributes();
-                for (Attr attribute : attributes) {
-                    e.setAttributeNode(attribute);
-                }
+            for (RoverTelemetry rover : rovers) {
+                Element e = rover.getElement(doc);
                 root.appendChild(e);
             }
-
             MsHTTP.sendXML(httpExchange, doc);
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);

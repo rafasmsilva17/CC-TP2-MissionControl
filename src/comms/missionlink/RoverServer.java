@@ -2,6 +2,7 @@ package comms.missionlink;
 
 import comms.Encoder;
 import comms.packets.*;
+import comms.packets.common.PacketType;
 import comms.telemetry.MissionTelemetry;
 import core.Rover;
 import core.missions.Mission;
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class RoverServer extends Thread implements UDPServerLogic{
     private final UDPServer uServer;
-    private static final String mothershipName = "localhost";
+    public static final String mothershipName = "localhost";
     private static final int mothershipPort = 3001;
 
     private byte[] buf = new byte[1024];

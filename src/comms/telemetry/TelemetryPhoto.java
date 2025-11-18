@@ -1,16 +1,14 @@
 package comms.telemetry;
 
 import comms.Encoder;
-import comms.packets.TLVPacket;
+import comms.packets.common.TLVPacket;
 import core.missions.PhotoMission;
 import core.missions.common.Coordinate;
 import core.missions.common.MissionType;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.nio.ByteBuffer;
-import java.util.List;
 
 public class TelemetryPhoto extends MissionTelemetry {
     public Coordinate coord;

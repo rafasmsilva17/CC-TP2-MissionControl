@@ -1,4 +1,4 @@
-package comms.packets;
+package comms.packets.common;
 
 public enum PacketType {
     ACK,
@@ -6,7 +6,8 @@ public enum PacketType {
     REGISTER,
     MISSION,
     MISSIONTELEMETRY,
-    MISSIONCANCEL;
+    MISSIONCANCEL,
+    ROVERTELEMETRY;
 
     public static PacketType fromByte(byte b){
         return switch (b){
@@ -16,6 +17,7 @@ public enum PacketType {
             case 0x03 -> MISSION;
             case 0x04 -> MISSIONTELEMETRY;
             case 0x05 -> MISSIONCANCEL;
+            case 0x06 -> ROVERTELEMETRY;
             default -> null;
         };
     }
@@ -28,6 +30,7 @@ public enum PacketType {
             case MISSION -> 0x03;
             case MISSIONTELEMETRY -> 0x04;
             case MISSIONCANCEL -> 0x05;
+            case ROVERTELEMETRY -> 0x06;
         };
     }
 }

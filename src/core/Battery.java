@@ -4,7 +4,13 @@ public class Battery {
     private int MAX_CAPACITY = 100;
     private int charge = MAX_CAPACITY;
 
-    Battery(){}
+    private final int consumptionPerSecond = 1;
+    private long lastTick;
+    private boolean charging = false;
+
+    Battery(){
+        this.lastTick = System.currentTimeMillis();
+    }
 
     Battery(Battery originBattery){
         this.MAX_CAPACITY = originBattery.getMaxCapacity();
@@ -15,23 +21,32 @@ public class Battery {
         this.charge = charge;
     }
 
-    // Getters //
     public int getMaxCapacity(){ return this.MAX_CAPACITY; }
     public int getCharge(){ return this.charge; }
 
-    // Setters //
     public void setCharge(int newCharge){ this.charge = newCharge; }
 
+    // retorna o estado de carregamento do rover
+    public boolean tick(){
+        long timeDiff = System.currentTimeMillis() - lastTick;
+        if (charging){
+            if ((double) timeDiff / 1000 >= 0.5){
+                charge += consumptionPerSecond;
+                lastTick = System.currentTimeMillis();
+            }
+        } else {
+            if (timeDiff / 1000 >= 1){
+                System.out.println("[STATUS] Discharging");
+                charge -= consumptionPerSecond;
+                lastTick = System.currentTimeMillis();
+            }
+        }
 
-    public int addCharge(int amount){
-        charge += amount;
-        return charge;
+        if (charge <= 5){
+            charging = true;
+            System.out.println("[STATUS] STOPPING TO CHARGE BATTERY");
+        } else if (charge == MAX_CAPACITY) charging = false;
+
+        return charging;
     }
-
-    public int removeCharge(int amount){
-        charge -= amount;
-        return charge;
-    }
-
-    public void fullCharge(){ charge = MAX_CAPACITY; }
 }

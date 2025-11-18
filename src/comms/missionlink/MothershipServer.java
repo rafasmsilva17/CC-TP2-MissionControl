@@ -3,7 +3,7 @@ package comms.missionlink;
 
 import comms.Encoder;
 import comms.packets.MissionCancelPacket;
-import comms.packets.PacketType;
+import comms.packets.common.PacketType;
 import comms.packets.RegisterRoverPacket;
 import comms.telemetry.MissionTelemetry;
 import core.MotherShip;
@@ -46,7 +46,6 @@ public class MothershipServer extends Thread implements UDPServerLogic{
                     System.out.println(telemetry);
                     uServer.sendACK(-Integer.parseInt(telemetry.id.substring(2)), packet.getAddress(), packet.getPort());
                     MotherShip.handleMissionTelemetry(telemetry);
-                    // TODO mandar telemetry para o HTTP
 
                 } else if (packetT == PacketType.REGISTER) {
                     // registo que o rover manda assim que é iniciado

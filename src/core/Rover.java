@@ -1,6 +1,7 @@
 package core;
 
 import comms.missionlink.RoverServer;
+import comms.tcp.RoverTCPClient;
 import core.missions.AnaliseSampleMission;
 import core.missions.Mission;
 import core.missions.PhotoMission;
@@ -16,9 +17,9 @@ public class Rover {
 
     private int id = -1;
     private Long awakeTime = System.currentTimeMillis();
-    private Battery battery = new Battery();
+    public Battery battery = new Battery();
     // Priority Queue com as missoes passou para o mission handler
-    private HashMap<String, Sample> collectedSamples = new HashMap<>(); //amostras atualmente no rover
+    private final HashMap<String, Sample> collectedSamples = new HashMap<>(); //amostras atualmente no rover
     private float speed = 2f;
     private final Coordinate position = new Coordinate(0, 0);
     private boolean sendMissionFinish = false;
@@ -28,10 +29,12 @@ public class Rover {
 
     private final RoverMissionHandler missionHandler;
     private final RoverServer missionServer;
+    private final RoverTCPClient telemetryClient;
 
     public Rover(){
         missionHandler = new RoverMissionHandler(this);
         missionServer = new RoverServer(this);
+        telemetryClient= new RoverTCPClient(this);
         missionServer.start();
         missionServer.setName("Rover" + id + " Server");
         run();
@@ -81,11 +84,14 @@ public class Rover {
                 throw new RuntimeException(e);
             }
 
+            battery.tick();
+
+            telemetryClient.tick();
+
             if (cancelSignal){
                 missionHandler.cancelMission();
                 cancelSignal = false;
             }
-
             if (toSendMissionFinish()){
                 missionServer.sendMissionTelemetry(missionHandler.getLastFinishedMission());
                 sendMissionFinish = false;
@@ -175,5 +181,13 @@ public class Rover {
 
     public void cancelMission(){
         cancelSignal = true;
+    }
+
+    public List<String> getMissionBuffer(){
+        return missionHandler.missionBuffer();
+    }
+
+    public Mission getCurrentMission(){
+        return missionHandler.getCurrentMission();
     }
 }

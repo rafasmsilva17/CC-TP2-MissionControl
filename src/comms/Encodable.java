@@ -1,6 +1,6 @@
 package comms;
 
-import comms.packets.TLVPacket;
+import comms.packets.common.TLVPacket;
 
 public interface Encodable {
 

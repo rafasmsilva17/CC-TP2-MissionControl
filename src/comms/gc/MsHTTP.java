@@ -52,12 +52,17 @@ public class MsHTTP{
         allMissions.put(telem.id, telem);
     }
 
+    public void addRoverTelemetry(RoverTelemetry telem){
+        rovers.put(telem.roverID, telem);
+    }
+
     public List<MissionTelemetry> getMissions(){
         return new ArrayList<>(missions.values());
     }
     public List<MissionTelemetry> getAllMissions(){
         return new ArrayList<>(allMissions.values());
     }
+
     public List<RoverTelemetry> getRovers(){
         return new ArrayList<>(rovers.values());
     }

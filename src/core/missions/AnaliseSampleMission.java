@@ -1,14 +1,13 @@
 package core.missions;
 
 import comms.Encoder;
-import comms.packets.TLVPacket;
+import comms.packets.common.TLVPacket;
 import comms.telemetry.MissionTelemetry;
 import comms.telemetry.TelemetryAnaliseSample;
 import core.Rover;
 import core.missions.common.MissionType;
 
 import java.nio.ByteBuffer;
-import java.util.Objects;
 import java.util.Random;
 
 

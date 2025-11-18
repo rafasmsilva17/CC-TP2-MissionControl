@@ -1,7 +1,7 @@
 package comms.telemetry;
 
 import comms.Encoder;
-import comms.packets.TLVPacket;
+import comms.packets.common.TLVPacket;
 import core.missions.AnaliseAtmosphereMission;
 import core.missions.common.Coordinate;
 import core.missions.common.MissionType;

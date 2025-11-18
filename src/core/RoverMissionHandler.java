@@ -4,7 +4,9 @@ import comms.missionlink.RoverServer;
 import core.missions.Mission;
 import core.missions.common.MissionStatus;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -117,5 +119,13 @@ public class RoverMissionHandler extends Thread{
 
     public void setLastFinishedMission(Mission lastFinishedMission) {
         this.lastFinishedMission = lastFinishedMission;
+    }
+
+    public List<String> missionBuffer(){
+        return new ArrayList<>(priorityQueue.stream().map(mission -> mission.id).toList());
+    }
+
+    public Mission getCurrentMission(){
+        return currentMission;
     }
 }

@@ -1,6 +1,10 @@
 package comms.packets;
 
-public class RegisterRoverPacket extends TLVPacket implements RoverPacket{
+import comms.packets.common.PacketType;
+import comms.packets.common.RoverPacket;
+import comms.packets.common.TLVPacket;
+
+public class RegisterRoverPacket extends TLVPacket implements RoverPacket {
     public static PacketType type = PacketType.REGISTER;
 
     // Constructor para fazer request de um ID

@@ -2,7 +2,7 @@ package core.missions;
 
 
 import comms.Encoder;
-import comms.packets.TLVPacket;
+import comms.packets.common.TLVPacket;
 import comms.telemetry.MissionTelemetry;
 import comms.telemetry.TelemetryPhoto;
 import core.Rover;

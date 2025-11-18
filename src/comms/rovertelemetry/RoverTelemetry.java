@@ -1,22 +1,77 @@
 package comms.rovertelemetry;
 
+import comms.Encoder;
+import comms.Telemetry;
+import comms.packets.common.PacketType;
+import comms.packets.common.TLVPacket;
+import core.Rover;
+import core.missions.Mission;
 import core.missions.common.Coordinate;
-import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import java.nio.ByteBuffer;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
-public class RoverTelemetry {
-    private int roverID;
-    private int battery;
-    private Coordinate coord;
-    private float currSpeed;
-    private List<Integer> missionBuffer = new ArrayList<>();
-    private int currMission;
-    private String status;
+public class RoverTelemetry extends Telemetry {
+    public int roverID;
+    public int batteryCharge;
+    public Coordinate coord;
+    public float currSpeed;
+    public List<String> missionBuffer = new ArrayList<>();
+    public String currMission = null;
 
-    public List<Attr> getAttributes(){
-        List<Attr> attributes = new ArrayList<>();
-        return attributes;
+
+    public RoverTelemetry(Rover rover){
+        this.roverID = rover.getId();
+        this.batteryCharge = rover.battery.getCharge();
+        this.coord = rover.getPosition();
+        this.currSpeed = rover.getSpeed();
+        this.missionBuffer = rover.getMissionBuffer();
+        Mission curr = rover.getCurrentMission();
+        if (curr != null) currMission = curr.id;
+    }
+
+    public RoverTelemetry(ByteBuffer buffer){
+        this.roverID = Encoder.decodeInt(buffer);
+        this.batteryCharge = Encoder.decodeByte(buffer);
+        this.coord = Encoder.decodeCoordinate(buffer);
+        this.currSpeed = Encoder.decodeFloat(buffer);
+        missionBuffer.addAll(Arrays.asList(Encoder.decodeStringArray(buffer)));
+        this.currMission = Encoder.decodeString(buffer);
+        if (currMission.equals("null")) currMission = null;
+    }
+
+    public TLVPacket getEncodeData(){
+        TLVPacket packet = new TLVPacket();
+        packet.writeByte(PacketType.ROVERTELEMETRY.toByte());
+        packet.writeInt(roverID);
+        packet.writeByte((byte)batteryCharge);
+        packet.writeCoordinate(coord);
+        packet.writeFloat(currSpeed);
+        String[] missionIDS = new String[missionBuffer.size()];
+        int c = 0;
+        for (String s : missionBuffer) {
+            missionIDS[c++] = s;
+        }
+        packet.writeStringArray(missionIDS);
+        packet.writeString((currMission != null ? currMission : "null"));
+        return packet;
+    }
+
+    @Override
+    public Element getElement(Document doc) {
+        Element base = doc.createElement("Rover" + roverID);
+        base.setAttribute("id", String.valueOf(roverID));
+        base.setAttribute("battery", String.valueOf(batteryCharge));
+        base.setAttribute("position", coord.toString());
+        base.setAttribute("speed", String.valueOf(currSpeed));
+        base.setAttribute("DoingMission", (currMission != null) ? currMission : "none");
+        base.setAttribute("MissionBuffer", missionBuffer.toString());
+        return base;
     }
 }
