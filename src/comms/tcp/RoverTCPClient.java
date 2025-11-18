@@ -4,7 +4,7 @@ import comms.missionlink.RoverServer;
 import comms.packets.RoverTelemetryPacket;
 import comms.rovertelemetry.RoverTelemetry;
 import core.MotherShip;
-import core.Rover;
+import core.rover.Rover;
 
 import java.io.IOException;
 import java.io.OutputStream;

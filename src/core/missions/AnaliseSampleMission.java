@@ -4,7 +4,7 @@ import comms.Encoder;
 import comms.packets.common.TLVPacket;
 import comms.telemetry.MissionTelemetry;
 import comms.telemetry.TelemetryAnaliseSample;
-import core.Rover;
+import core.rover.Rover;
 import core.missions.common.MissionType;
 
 import java.nio.ByteBuffer;
@@ -39,6 +39,7 @@ public class AnaliseSampleMission extends Mission {
     // Ao executar missão, já tem de ser garantido que o rover tem a sample
     @Override
     public boolean executeMission(Rover rover) {
+        rover.workingStatus();
         Random rand = new Random();
         if (resultSize == -1){
             resultSize = rand.nextInt(64);

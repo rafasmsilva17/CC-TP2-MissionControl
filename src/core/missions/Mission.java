@@ -6,7 +6,7 @@ import comms.Encoder;
 import comms.packets.common.PacketType;
 import comms.packets.common.TLVPacket;
 import comms.telemetry.MissionTelemetry;
-import core.Rover;
+import core.rover.Rover;
 import core.missions.common.MissionStatus;
 import core.missions.common.MissionType;
 import core.missions.common.Priority;

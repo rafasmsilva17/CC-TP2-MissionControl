@@ -4,7 +4,7 @@ import comms.Encoder;
 import comms.packets.common.TLVPacket;
 import comms.telemetry.MissionTelemetry;
 import comms.telemetry.TelemetryGetSample;
-import core.Rover;
+import core.rover.Rover;
 import core.missions.common.Coordinate;
 import core.missions.common.MissionType;
 import core.missions.common.Priority;
@@ -55,6 +55,7 @@ public class GetSampleMission extends Mission{
     public boolean executeMission(Rover rover) {
         if (!roverArrived) roverArrived = rover.moveTowards(position);
         else {
+            rover.workingStatus();
             Random rand = new Random();
             if (currentSamplePosition == null){
                 currentSamplePosition =

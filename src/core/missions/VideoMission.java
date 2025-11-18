@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import comms.packets.common.TLVPacket;
 import comms.telemetry.MissionTelemetry;
 import comms.telemetry.TelemetryVideo;
-import core.Rover;
+import core.rover.Rover;
 import core.missions.common.Coordinate;
 import core.missions.common.MissionType;
 
@@ -42,6 +42,7 @@ public class VideoMission extends Mission{
     public boolean executeMission(Rover rover) {
         if (!roverArrived) roverArrived = rover.moveTowards(position);
         else {
+            rover.workingStatus();
             if (videoStartTime == -1) videoStartTime = System.currentTimeMillis();
             return (System.currentTimeMillis() - videoStartTime) / 1000 >= duration;
         }

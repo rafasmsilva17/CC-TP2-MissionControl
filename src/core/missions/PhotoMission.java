@@ -5,7 +5,7 @@ import comms.Encoder;
 import comms.packets.common.TLVPacket;
 import comms.telemetry.MissionTelemetry;
 import comms.telemetry.TelemetryPhoto;
-import core.Rover;
+import core.rover.Rover;
 import core.missions.common.Coordinate;
 import core.missions.common.MissionType;
 import core.missions.common.Priority;
@@ -58,6 +58,7 @@ public class PhotoMission extends Mission{
     public boolean executeMission(Rover rover) {
         if (!roverArrived) roverArrived = rover.moveTowards(position);
         else {
+            rover.workingStatus();
             Random rand = new Random();
             currentPhotoProgress += rand.nextInt(15);
             if (currentPhotoProgress >= 100){

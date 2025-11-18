@@ -1,9 +1,4 @@
-import comms.missionlink.RoverServer;
 import core.MotherShip;
-import core.Rover;
-import core.missions.*;
-import core.missions.common.Coordinate;
-import core.missions.common.Priority;
 
 
 public class MothershipMain {

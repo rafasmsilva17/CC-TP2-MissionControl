@@ -1,4 +1,4 @@
-package core;
+package core.rover;
 
 import comms.missionlink.RoverServer;
 import core.missions.Mission;
@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -18,7 +19,8 @@ public class RoverMissionHandler extends Thread{
     private Mission currentMission = null;
     private Mission lastFinishedMission = null;
     private final Lock missionQueueLock = new ReentrantLock();
-    private final Lock cancelLock = new ReentrantLock();
+    private final Lock chargingLock = new ReentrantLock();
+    private final Condition isCharging = chargingLock.newCondition();
 
     public RoverMissionHandler(Rover parent){
         parentRover = parent;
@@ -52,15 +54,27 @@ public class RoverMissionHandler extends Thread{
         currentMission.cancel();
     }
 
+
     private void doMission(){
         while (currentMission == null) currentMission = priorityQueue.poll();
         // Fazer missão de alguma forma
         currentMission.start(parentRover.getId());
         while(currentMission.isActive()){
+            chargingLock.lock();
+            while(parentRover.battery.charging()) {
+                try {
+                    System.out.println("[MISSION HANDLER] Charging! Waiting...");
+                    isCharging.await();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            chargingLock.unlock();
             System.out.println("Doing mission " + currentMission.id);
             boolean finished = currentMission.executeMission(parentRover);
             if (finished){
                 finishMission();
+                parentRover.idleStatus();
                 return;
             }
 
@@ -127,5 +141,11 @@ public class RoverMissionHandler extends Thread{
 
     public Mission getCurrentMission(){
         return currentMission;
+    }
+
+    public void signalBatteryFull(){
+        chargingLock.lock();
+        isCharging.signal();
+        chargingLock.unlock();
     }
 }

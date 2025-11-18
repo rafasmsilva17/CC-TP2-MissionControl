@@ -4,7 +4,7 @@ import comms.Encoder;
 import comms.packets.*;
 import comms.packets.common.PacketType;
 import comms.telemetry.MissionTelemetry;
-import core.Rover;
+import core.rover.Rover;
 import core.missions.Mission;
 
 import java.io.IOException;

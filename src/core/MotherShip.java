@@ -1,9 +1,7 @@
 package core;
 
-import comms.Encoder;
 import comms.gc.MsHTTP;
 import comms.missionlink.MothershipServer;
-import comms.packets.common.PacketType;
 import comms.rovertelemetry.RoverTelemetry;
 import comms.tcp.MothershipTCPServer;
 import comms.telemetry.MissionTelemetry;

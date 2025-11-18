@@ -1,15 +1,13 @@
-package core;
+package core.rover;
 
 import comms.missionlink.RoverServer;
 import comms.tcp.RoverTCPClient;
 import core.missions.AnaliseSampleMission;
 import core.missions.Mission;
-import core.missions.PhotoMission;
 import core.missions.common.Coordinate;
 import core.missions.common.Sample;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -18,13 +16,15 @@ public class Rover {
     private int id = -1;
     private Long awakeTime = System.currentTimeMillis();
     public Battery battery = new Battery();
+    public RoverStatus status = RoverStatus.IDLE;
+
     // Priority Queue com as missoes passou para o mission handler
     private final HashMap<String, Sample> collectedSamples = new HashMap<>(); //amostras atualmente no rover
     private float speed = 2f;
     private final Coordinate position = new Coordinate(0, 0);
     private boolean sendMissionFinish = false;
-    private final Lock missionFinishLock = new ReentrantLock();
 
+    private final Lock missionFinishLock = new ReentrantLock();
     private boolean cancelSignal = false;
 
     private final RoverMissionHandler missionHandler;
@@ -76,6 +76,7 @@ public class Rover {
     // Isto não é implementaçao de thread
     public void run(){
         Mission currentMission = null;
+        boolean wasCharging = false;
         long lastUpdate = -1L;
         while(true){
             try {
@@ -84,7 +85,16 @@ public class Rover {
                 throw new RuntimeException(e);
             }
 
-            battery.tick();
+            boolean isCharging = battery.tick();
+            if (isCharging){
+                wasCharging = true;
+                chargingStatus();
+            }
+            if (wasCharging && !isCharging){
+                System.out.println("[ROVER] Battery full. Signaling to mission handler.");
+                missionHandler.signalBatteryFull();
+                wasCharging = false;
+            }
 
             telemetryClient.tick();
 
@@ -106,9 +116,6 @@ public class Rover {
                     lastUpdate = System.currentTimeMillis() + currentMission.updateInterval * 1000L;
                 }
             }
-
-            // updateRoverStatus
-
         }
     }
 
@@ -160,6 +167,7 @@ public class Rover {
     public RoverServer getServer(){ return missionServer; }
 
     public boolean moveTowards(Coordinate objective){
+        movingStatus();
         float latitude = position.getLatitude();
         float longitude = position.getLongitude();
         float distX = objective.getLatitude() - latitude;
@@ -189,5 +197,21 @@ public class Rover {
 
     public Mission getCurrentMission(){
         return missionHandler.getCurrentMission();
+    }
+
+    public void idleStatus(){
+        status = RoverStatus.IDLE;
+    }
+
+    public void movingStatus(){
+        status = RoverStatus.MOVING;
+    }
+
+    public void workingStatus(){
+        status = RoverStatus.WORKING;
+    }
+
+    public void chargingStatus(){
+        status = RoverStatus.CHARGING;
     }
 }

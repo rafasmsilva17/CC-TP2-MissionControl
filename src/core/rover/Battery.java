@@ -1,4 +1,4 @@
-package core;
+package core.rover;
 
 public class Battery {
     private int MAX_CAPACITY = 100;
@@ -6,14 +6,10 @@ public class Battery {
 
     private final int consumptionPerSecond = 1;
     private long lastTick;
-    private boolean charging = false;
+    boolean charging = false;
 
     Battery(){
         this.lastTick = System.currentTimeMillis();
-    }
-
-    Battery(Battery originBattery){
-        this.MAX_CAPACITY = originBattery.getMaxCapacity();
     }
 
     Battery(int maxCapacity, int charge){
@@ -36,7 +32,6 @@ public class Battery {
             }
         } else {
             if (timeDiff / 1000 >= 1){
-                System.out.println("[STATUS] Discharging");
                 charge -= consumptionPerSecond;
                 lastTick = System.currentTimeMillis();
             }
@@ -47,6 +42,10 @@ public class Battery {
             System.out.println("[STATUS] STOPPING TO CHARGE BATTERY");
         } else if (charge == MAX_CAPACITY) charging = false;
 
+        return charging;
+    }
+
+    public boolean charging(){
         return charging;
     }
 }

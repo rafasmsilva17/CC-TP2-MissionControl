@@ -1,4 +1,4 @@
-import core.Rover;
+import core.rover.Rover;
 
 public class RoverMain {
 
