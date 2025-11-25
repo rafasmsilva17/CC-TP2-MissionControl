@@ -128,6 +128,7 @@ public abstract class Mission implements Encodable {
             case GET_SAMPLE -> new GetSampleMission(type, buf);
             case ANALYSE_SAMPLE -> new AnaliseSampleMission(type, buf);
             case ANALYSE_ATMO -> new AnaliseAtmosphereMission(type, buf);
+            case DEPOSIT_SAMPLE -> new DepositSampleMission(type, buf);
             default -> null;
         };
     }

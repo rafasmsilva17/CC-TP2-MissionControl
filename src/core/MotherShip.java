@@ -53,14 +53,15 @@ public class MotherShip {
         AnaliseSampleMission miss11 = new AnaliseSampleMission("1-1");
         VideoMission miss2 = new VideoMission(coord, 1, 60);
         AnaliseAtmosphereMission miss3 = new AnaliseAtmosphereMission(coord, 60 * 10, Priority.NORMAL);
+        DepositSampleMission miss4 = new DepositSampleMission(coord,"1-1", 600, Priority.URGENT);
         try {
             Thread.sleep(10000); // iniciar o servidor do rover durante este tempo
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        this.assignMissionTo(1, miss3);
-        this.assignMissionTo(1, miss);
         this.assignMissionTo(1, miss1);
+        this.assignMissionTo(1, miss4);
+        
 
         // True
         while(true){

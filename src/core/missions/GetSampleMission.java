@@ -68,6 +68,7 @@ public class GetSampleMission extends Mission{
                 currentSampleProgress += rand.nextInt(15);
                 if (currentSampleProgress >= 100){
                     Sample newSample = new Sample(rover.getId());
+                    System.out.print(newSample.getId());
                     rover.addSample(newSample);
                     samplesCollected.add(newSample);
                     currentSampleProgress = 0;

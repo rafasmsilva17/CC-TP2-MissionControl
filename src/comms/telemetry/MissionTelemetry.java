@@ -77,6 +77,7 @@ public abstract class MissionTelemetry extends Telemetry {
             case GET_SAMPLE -> new TelemetryGetSample(type, buf);
             case ANALYSE_SAMPLE -> new TelemetryAnaliseSample(type, buf);
             case ANALYSE_ATMO -> new TelemetryAnaliseAtmo(type, buf);
+            case DEPOSIT_SAMPLE -> new TelemetryDepositSample(type,buf);
             default -> null;
         };
     }
