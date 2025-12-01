@@ -19,6 +19,7 @@ import java.util.List;
 public class RoverTelemetry extends Telemetry {
     public int roverID;
     public int batteryCharge;
+    public float temperature;
     public Coordinate coord;
     public float currSpeed;
     public List<String> missionBuffer = new ArrayList<>();
@@ -29,6 +30,7 @@ public class RoverTelemetry extends Telemetry {
     public RoverTelemetry(Rover rover){
         this.roverID = rover.getId();
         this.batteryCharge = rover.battery.getCharge();
+        this.temperature = rover.getTemperature();
         this.coord = rover.getPosition();
         this.currSpeed = rover.getSpeed();
         this.missionBuffer = rover.getMissionBuffer();
@@ -40,6 +42,7 @@ public class RoverTelemetry extends Telemetry {
     public RoverTelemetry(ByteBuffer buffer){
         this.roverID = Encoder.decodeInt(buffer);
         this.batteryCharge = Encoder.decodeByte(buffer);
+        this.temperature = Encoder.decodeFloat(buffer);
         this.status = RoverStatus.fromByte(Encoder.decodeByte(buffer));
         this.coord = Encoder.decodeCoordinate(buffer);
         this.currSpeed = Encoder.decodeFloat(buffer);
@@ -53,6 +56,7 @@ public class RoverTelemetry extends Telemetry {
         packet.writeByte(PacketType.ROVERTELEMETRY.toByte());
         packet.writeInt(roverID);
         packet.writeByte((byte)batteryCharge);
+        packet.writeFloat(temperature);
         packet.writeByte(status.toByte());
         packet.writeCoordinate(coord);
         packet.writeFloat(currSpeed);
@@ -71,6 +75,7 @@ public class RoverTelemetry extends Telemetry {
         Element base = doc.createElement("Rover" + roverID);
         base.setAttribute("id", String.valueOf(roverID));
         base.setAttribute("battery", String.valueOf(batteryCharge));
+        base.setAttribute("temperature", String.valueOf(temperature));
         base.setAttribute("position", coord.toString());
         base.setAttribute("speed", String.valueOf(currSpeed));
         base.setAttribute("DoingMission", (currMission != null) ? currMission : "none");

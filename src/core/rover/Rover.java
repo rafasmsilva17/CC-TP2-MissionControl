@@ -18,9 +18,11 @@ public class Rover {
     public Battery battery = new Battery();
     public RoverStatus status = RoverStatus.IDLE;
 
+
     // Priority Queue com as missoes passou para o mission handler
     private final HashMap<String, Sample> collectedSamples = new HashMap<>(); //amostras atualmente no rover
     private float speed = 2f;
+    private float temperature = 30.0f;
     private final Coordinate position = new Coordinate(0, 0);
     private boolean sendMissionFinish = false;
 
@@ -90,6 +92,9 @@ public class Rover {
                 wasCharging = true;
                 chargingStatus();
             }
+
+            // tickTemperature()
+
             if (wasCharging && !isCharging){
                 System.out.println("[ROVER] Battery full. Signaling to mission handler.");
                 missionHandler.signalBatteryFull();
@@ -187,6 +192,24 @@ public class Rover {
         return false;
     }
 
+    public void tickTemperature(){
+        if (status == RoverStatus.COOLING && temperature <= 50){
+            status = RoverStatus.IDLE;
+            return;
+        }
+        float netChange = 0.0f;
+        switch (status){
+            case IDLE -> netChange = 0.1f;
+            case CHARGING -> netChange = 0.0f;
+            case MOVING -> netChange = 0.4f;
+            case WORKING -> netChange = 0.2f;
+            case COOLING -> netChange = 1.0f;
+        }
+        temperature += netChange;
+        netChange = Math.clamp(netChange, 30.0f, 90.0f);
+        if (temperature == 90) coolingStatus();
+    }
+
     public void cancelMission(){
         cancelSignal = true;
     }
@@ -198,6 +221,8 @@ public class Rover {
     public Mission getCurrentMission(){
         return missionHandler.getCurrentMission();
     }
+
+    public float getTemperature(){ return temperature; }
 
     public void idleStatus(){
         status = RoverStatus.IDLE;
@@ -213,5 +238,9 @@ public class Rover {
 
     public void chargingStatus(){
         status = RoverStatus.CHARGING;
+    }
+
+    public void coolingStatus(){
+        status = RoverStatus.COOLING;
     }
 }
