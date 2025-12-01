@@ -6,9 +6,12 @@ import comms.packets.common.TLVPacket;
 
 public class MissionRequestPacket extends TLVPacket implements RoverPacket {
     public static final PacketType type = PacketType.REQUEST;
+    public int roverID;
 
-    public MissionRequestPacket(){
+    public MissionRequestPacket(int roverID){
         super();
         writeByte((byte)type.toByte());
+        this.roverID = roverID;
+        writeInt(roverID);
     }
 }

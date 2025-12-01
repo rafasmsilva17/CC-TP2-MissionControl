@@ -8,6 +8,7 @@ import comms.packets.RegisterRoverPacket;
 import comms.telemetry.MissionTelemetry;
 import core.MotherShip;
 import core.missions.Mission;
+import core.missions.MissionGenerator;
 
 import java.net.*;
 import java.nio.ByteBuffer;
@@ -33,9 +34,12 @@ public class MothershipServer extends Thread implements UDPServerLogic{
                 ByteBuffer receivedData = ByteBuffer.wrap(packet.getData());
                 PacketType packetT = PacketType.fromByte(Encoder.decodeByte(receivedData));
                 if (packetT == PacketType.REQUEST) {
-                    // se for request de missão, mandar missão e passa para o proximo
+                    int roverID = Encoder.decodeInt(receivedData);
+                    MissionGenerator gen = new MissionGenerator();
+                    Mission missionToAssign = gen.generateRandomMisson();
                     System.out.println("[MOTHERSHIP] Received mission request from " +
                             packet.getAddress() + ":" + packet.getPort());
+                    missionLinker.assignMission(roverID, packet.getAddress(), missionToAssign);
 
                 } else if (packetT == PacketType.MISSIONTELEMETRY){
                     System.out.println("Received mission telemetry!");

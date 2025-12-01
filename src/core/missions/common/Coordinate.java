@@ -3,6 +3,11 @@ package core.missions.common;
 public class Coordinate {
     private float latitude;
     private float longitude;
+    public final static float minLat = -90;
+    public final static float maxLat = 90;
+    public final static float minLon = -180;
+    public final static float maxLon = 180;
+
 
     public Coordinate(float lat, float lon) {
         if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {

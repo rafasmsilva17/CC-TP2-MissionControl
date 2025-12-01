@@ -22,7 +22,7 @@ public class PhotoMission extends Mission{
     private int photosTaken = 0;
 
 
-    private PhotoMission(Coordinate position, int direction, int quantity) {
+    public PhotoMission(Coordinate position, int direction, int quantity) {
         super();
         this.type = MissionType.PHOTO;
         this.position = position;
@@ -33,9 +33,9 @@ public class PhotoMission extends Mission{
     public PhotoMission(Coordinate position,
                         int direction,
                         int quantity,
-                        int duracaoMaxima,
+                        int maxDuration,
                         Priority p) {
-        super(p, duracaoMaxima);
+        super(p, maxDuration);
         this.type = MissionType.PHOTO;
         this.position = position;
         this.direction = direction;

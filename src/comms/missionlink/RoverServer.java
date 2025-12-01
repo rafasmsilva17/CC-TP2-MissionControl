@@ -69,7 +69,7 @@ public class RoverServer extends Thread implements UDPServerLogic{
     }
 
     public void sendMissionRequest(){
-        MissionRequestPacket request = new MissionRequestPacket();
+        MissionRequestPacket request = new MissionRequestPacket(parentRover.getId());
         try {
             // TODO mudar o hardcode do endereço da navemae
             DatagramPacket packet = new DatagramPacket(request.getBuffer(),

@@ -9,6 +9,7 @@ import comms.telemetry.TelemetryVideo;
 import core.rover.Rover;
 import core.missions.common.Coordinate;
 import core.missions.common.MissionType;
+import core.missions.common.Priority;
 
 public class VideoMission extends Mission{
     private Coordinate position;
@@ -25,6 +26,15 @@ public class VideoMission extends Mission{
         this.direction = direction;
         this.duration = duration;
     }
+    
+    public VideoMission(Coordinate position, int direction, int duration, int maxDuration, Priority p){
+        super(p, maxDuration);
+        this.type = MissionType.VIDEO;
+        this.position = position;
+        this.direction = direction;
+        this.duration = duration;
+    }
+    
 
     protected VideoMission(MissionType type, ByteBuffer buf){
         super(type, buf);
