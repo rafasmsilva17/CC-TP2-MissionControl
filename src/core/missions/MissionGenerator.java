@@ -16,7 +16,7 @@ public class MissionGenerator {
     List<MissionType> typesL = new ArrayList<>(Arrays.asList(types));
     Priority[] priorities = Priority.values();
 
-    private int maxMissionDuration = 100;
+    private int maxMissionDuration = 600;
     private int maxPhotos = 10;
     private int maxDegreeDir = 360;
     private int maxVideoDur = 30;
@@ -30,7 +30,7 @@ public class MissionGenerator {
         MissionType mt = typesL.get(missionTypeIndex);
         int priorityIndex = rd.nextInt(priorities.length);
         Priority p = priorities[priorityIndex];
-        int maxMissionDur = rd.nextInt(maxMissionDuration);
+        int maxMissionDur = rd.nextInt(300, maxMissionDuration);
         Mission result = null;
         switch (mt) {
             case PHOTO:

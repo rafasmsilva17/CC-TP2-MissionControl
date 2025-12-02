@@ -88,6 +88,11 @@ public abstract class Mission implements Encodable {
         status = MissionStatus.FINISHED;
     }
 
+    public void prematureFinish(){
+        active = false;
+        status = MissionStatus.TIMED_OUT;
+    }
+
     public boolean isActive(){
         return active;
     }

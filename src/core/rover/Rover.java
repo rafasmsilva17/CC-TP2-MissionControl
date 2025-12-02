@@ -93,7 +93,7 @@ public class Rover {
                 chargingStatus();
             }
 
-            // tickTemperature()
+            tickTemperature(); // talvez se tenha de mudar isto
 
             if (wasCharging && !isCharging){
                 System.out.println("[ROVER] Battery full. Signaling to mission handler.");
@@ -197,16 +197,17 @@ public class Rover {
             status = RoverStatus.IDLE;
             return;
         }
-        float netChange = 0.0f;
+        float netChange;
         switch (status){
             case IDLE -> netChange = 0.1f;
             case CHARGING -> netChange = 0.0f;
-            case MOVING -> netChange = 0.4f;
+            case MOVING -> netChange = -0.4f;
             case WORKING -> netChange = 0.2f;
-            case COOLING -> netChange = 1.0f;
+            case COOLING -> netChange = -1.0f;
+            case null, default -> netChange = 0.0f;
         }
         temperature += netChange;
-        netChange = Math.clamp(netChange, 30.0f, 90.0f);
+        temperature = Math.clamp(temperature, 30.0f, 90.0f);
         if (temperature == 90) coolingStatus();
     }
 

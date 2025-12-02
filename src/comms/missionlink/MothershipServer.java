@@ -59,9 +59,9 @@ public class MothershipServer extends Thread implements UDPServerLogic{
                         assignRoverID = MotherShip.getRoverID(packet.getAddress());
                     } else {
                         assignRoverID = MotherShip.assignRoverID();
+                        MotherShip.registerRover(assignRoverID, packet.getAddress());
                     }
                     System.out.println("Received register from " + assignRoverID);
-                    MotherShip.registerRover(assignRoverID, packet.getAddress());
                     RegisterRoverPacket idAssignPacket = new RegisterRoverPacket(assignRoverID);
                     uServer.sendPacket(new DatagramPacket(idAssignPacket.getBuffer(),
                             idAssignPacket.getBuffer().length,

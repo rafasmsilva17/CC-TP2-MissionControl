@@ -14,6 +14,7 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MotherShip {
@@ -90,13 +91,11 @@ public class MotherShip {
 
     public static int getRoverID(InetAddress address){
         if(!isRoverRegistered(address)) return -1;
-        AtomicInteger roverID = new AtomicInteger();
-        roversAddresses.forEach((id, add) -> {
-            if(add == address){
-                roverID.set(id);
-            }
-        });
-        return roverID.get();
+        for (Map.Entry<Integer, InetAddress> entry : roversAddresses.entrySet()) {
+            if (entry.getValue().equals(address)) return entry.getKey();
+        }
+        System.out.println("Didnt find ID?? This isnt supposed to happen");
+        return -1;
     }
 
     public static void registerRover(int roverID, InetAddress address){

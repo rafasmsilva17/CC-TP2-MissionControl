@@ -60,6 +60,12 @@ public class RoverMissionHandler extends Thread{
         // Fazer missão de alguma forma
         currentMission.start(parentRover.getId());
         while(currentMission.isActive()){
+            if (currentMission.getTTL() <= 0){
+                System.out.println("[MISSION HANDLER] Reached max mission duration!");
+                prematureFinishMission();
+                parentRover.idleStatus();
+                return;
+            }
             chargingLock.lock();
             while(parentRover.battery.charging()) {
                 try {
@@ -90,6 +96,13 @@ public class RoverMissionHandler extends Thread{
                 return;
             }
         }
+    }
+
+    private void prematureFinishMission(){
+        currentMission.prematureFinish();
+        lastFinishedMission = currentMission;
+        currentMission = null;
+        parentRover.notifyMissionFinish();
     }
 
     private void finishMission(){

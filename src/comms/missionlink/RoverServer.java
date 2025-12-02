@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class RoverServer extends Thread implements UDPServerLogic{
     private final UDPServer uServer;
-    public static final String mothershipName = "localhost";
+    public static final String mothershipName = "Mothership";
     private static final int mothershipPort = 3001;
 
     private byte[] buf = new byte[1024];
@@ -60,6 +60,7 @@ public class RoverServer extends Thread implements UDPServerLogic{
                 PacketType packetT = PacketType.fromByte(Encoder.decodeByte(receivedData));
                 if (packetT != PacketType.REGISTER) continue;
                 int assignedID = Encoder.decodeInt(receivedData);
+                System.out.println("[REGISTRATION] Received id " + assignedID);
                 parentRover.setId(assignedID);
                 uServer.setName("Rover " + assignedID + " UDP");
             } catch (InterruptedException e) {

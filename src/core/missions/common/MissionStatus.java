@@ -5,7 +5,8 @@ public enum MissionStatus {
     ASSIGNED,
     IN_PROGRESS,
     FINISHED,
-    CANCELED;
+    CANCELED,
+    TIMED_OUT;
 
     public static MissionStatus fromByte(byte b){
         return switch (b) {
@@ -14,6 +15,7 @@ public enum MissionStatus {
           case 0x02 -> IN_PROGRESS;
           case 0x03 -> FINISHED;
           case 0x04 -> CANCELED;
+          case 0x05 -> TIMED_OUT;
             default -> null;
         };
     }
@@ -25,6 +27,7 @@ public enum MissionStatus {
             case IN_PROGRESS -> 0x02;
             case FINISHED -> 0x03;
             case CANCELED -> 0x04;
+            case TIMED_OUT -> 0x05;
         };
     }
 }

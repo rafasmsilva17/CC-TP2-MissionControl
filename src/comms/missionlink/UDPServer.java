@@ -81,9 +81,10 @@ public class UDPServer extends Thread{
     public void sendPacket(int packetIdentifier, DatagramPacket packet){
         if(waitingACKs.contains(packetIdentifier)){
             System.out.println("[" + getName().toUpperCase() + "] " +
-                    "I am already expecting an ACK for this identifier! " +
-                    "Canceling packet emission");
-            return;
+                    "I am already expecting an ACK for this identifier! " + packetIdentifier  +
+                    " Overwriting for newer packet");
+            timeoutHandler.removeTimeout(packetIdentifier);
+            System.out.println(packet.toString());
         }
         try {
             socket.send(packet);
